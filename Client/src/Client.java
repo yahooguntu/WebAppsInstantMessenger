@@ -3,6 +3,6 @@ public class Client
 {
 	public static void main(String[] args)
 	{
-		System.out.println("Test");
+		ChatWindow w = new ChatWindow("me");
 	}
 }
