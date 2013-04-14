@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Server
+public class Server implements Runnable
 {
 
 	private int listenPort;
@@ -68,5 +68,21 @@ public class Server
 	{
 		Server myServer = new Server();
 		myServer.start();
+
+		// monitor heartbeat, etc.
+		ServerMonitorThread monitor = new ServerMonitorThread(myServer);
+		monitor.start();
+
+		// spins on ServerSocket
+		myServer.start();
+	}
+
+	public void run()
+	{
+		ServerConnectionThread thisThread = (ServerConnectionThread) Thread.currentThread();
+		Socket thisSocket = thisThread.getSocket();
+		BufferedReader in;
+		PrintWriter out;
+		String user = null;
 	}
 }
