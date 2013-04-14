@@ -32,10 +32,10 @@ public class BasicServer
 				if ( (maxConnections == 0) || (numConnections <= maxConnections) )
 				{
 					newConnect = listenSocket.accept();
-					System.out.println("accepted "+newConnect.getInetAddress());
+					System.out.println("Accepted " + newConnect.getInetAddress());
 					System.out.flush();
 					numConnections++;
-					serviceConnection (newConnect);
+					serviceConnection(newConnect);
 				}
 			}
 		}
@@ -46,6 +46,7 @@ public class BasicServer
 		}
 	}
 	
+	// overridden
 	protected void serviceConnection (Socket connection) throws IOException
 	{
 
@@ -65,9 +66,4 @@ public class BasicServer
 		numConnections--;
 	}
 	
-	public static void main (String [] args)
-	{
-		BasicServer myServer = new BasicServer();
-		myServer.start();
-	}
 }

@@ -7,13 +7,10 @@ public class ServerConnectionThread extends Thread
 	
 	public ServerConnectionThread(ThreadedIMServer server, Socket connection)
 	{
+		super((Runnable) server);
+		
 		this.server = server;
 		this.connection = connection;
-	}
-	
-	public void run()
-	{
-		
 	}
 	
 	public ThreadedIMServer getServer()

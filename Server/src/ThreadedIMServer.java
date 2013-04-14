@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -32,16 +33,38 @@ extends BasicServer implements Runnable
 
 	public void run()
 	{
-		ServerConnectionThread thisThread = (ServerConnectionThread) Thread.currentThread();
-		Socket thisSocket = thisThread.getSocket();
-		BufferedReader in;
-		PrintWriter out;
-		String user = null;
-
-		/**********************
-	a bunch of code deleted; this is where
-	you handle the handshake with the client, and then
-	put your readline busy wait
-		 **************************/
+		System.out.println("Thread spun off!");
+		try
+		{
+			ServerConnectionThread currThread = (ServerConnectionThread) Thread.currentThread();
+			Socket socket = currThread.getSocket();
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintWriter out = new PrintWriter(socket.getOutputStream());
+			String user = null;
+			
+			String input = in.readLine();
+			while (input != null)
+			{
+				System.out.println("Received value from " + socket.getInetAddress() + ": " + input);
+				
+				input = in.readLine();
+			}
+			
+			System.out.println("Connection closed: " + socket.getInetAddress());
+			onCloseConnection();
+		}
+		catch (Exception e)
+		{
+			System.err.println("Exception thrown!");
+			System.exit(1);
+		}
+	}
+	
+	private void onCloseConnection()
+	{
+		synchronized(this)
+		{
+			numConnections--;
+		}
 	}
 }

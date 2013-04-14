@@ -7,13 +7,14 @@ import java.net.Socket;
 public class Client
 {
 	private static String hostname = "localhost";
-	private static int portNum = 4220;
+	private static int portNum = 4225;
 	private Socket connection;
 	private PrintWriter writer;
 	private BufferedReader reader;
 	
 	public static void main(String[] args)
 	{
+		Client c = new Client();
 		
 		ChatWindow w = new ChatWindow("me");
 	}
@@ -32,16 +33,19 @@ public class Client
 		catch (Exception e)
 		{
 			System.err.println("Failed to open socket!");
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
 	
 	private void loop()
 	{
-		while (true)
-		{
+		sendMessage("hi");
+		System.out.println("sent message");
+//		while (true)
+//		{
 			
-		}
+//		}
 	}
 	
 	public void sendMessage(String msg)
