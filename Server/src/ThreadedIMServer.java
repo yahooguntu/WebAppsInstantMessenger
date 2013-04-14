@@ -5,11 +5,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ThreadedIMServer
 extends BasicServer implements Runnable
 {
 	private BlockingQueue<Event> dispatchQueue;
+	private ConcurrentHashMap<String, PrintWriter> printWriters;
 	
 	public ThreadedIMServer()
 	{
@@ -36,9 +38,37 @@ extends BasicServer implements Runnable
 		connectThread.start();
 	}
 	
-	private void userOnline(String user, PrintWriter output)
+	private boolean userSignOn(String user, PrintWriter output)
 	{
-		
+		printWriters.put(user, output);
+		try
+		{
+			dispatchQueue.put(new Event(1, user));
+			return true;
+		}
+		catch (InterruptedException e)
+		{
+			output.write("7 " + user + "\n");
+			System.err.println("User " + user + " failed to sign in!");
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private boolean userSignOff(String user)
+	{
+		printWriters.remove(user);
+		try
+		{
+			dispatchQueue.put(new Event(2, user));
+			return true;
+		}
+		catch (InterruptedException e)
+		{
+			System.err.println("User " + user + " failed to sign out!");
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public void run()
