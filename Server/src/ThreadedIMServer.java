@@ -3,13 +3,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class ThreadedIMServer
 extends BasicServer implements Runnable
 {
+	private BlockingQueue<Event> dispatchQueue;
+	
 	public ThreadedIMServer()
 	{
 		super(4225, 0);
+		dispatchQueue = new ArrayBlockingQueue<Event>(20);
 		System.out.println("Server started.");
 	}
 
@@ -30,41 +35,27 @@ extends BasicServer implements Runnable
 		ServerConnectionThread connectThread = new ServerConnectionThread(this, connection);
 		connectThread.start();
 	}
+	
+	private void userOnline(String user, PrintWriter output)
+	{
+		
+	}
 
 	public void run()
 	{
-		System.out.println("Thread spun off!");
-		try
-		{
-			ServerConnectionThread currThread = (ServerConnectionThread) Thread.currentThread();
-			Socket socket = currThread.getSocket();
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter out = new PrintWriter(socket.getOutputStream());
-			String user = null;
-			
-			String input = in.readLine();
-			while (input != null)
-			{
-				System.out.println("Received value from " + socket.getInetAddress() + ": " + input);
-				
-				input = in.readLine();
-			}
-			
-			System.out.println("Connection closed: " + socket.getInetAddress());
-			onCloseConnection();
-		}
-		catch (Exception e)
-		{
-			System.err.println("Exception thrown!");
-			System.exit(1);
-		}
+		
 	}
 	
-	private void onCloseConnection()
+	public void onCloseConnection(String user)
 	{
 		synchronized(this)
 		{
 			numConnections--;
+		}
+		
+		if (user != null)
+		{
+			
 		}
 	}
 }
