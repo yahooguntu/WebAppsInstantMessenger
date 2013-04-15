@@ -5,11 +5,6 @@ public class ServerMonitorThread extends Thread
 	
 	public ServerMonitorThread(BasicServer server)
 	{
-		super();
-	}
-	
-	public void run()
-	{
-		System.out.println("monitoring on this thread");
+		super((Runnable) server);
 	}
 }

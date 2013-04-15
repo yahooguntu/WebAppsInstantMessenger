@@ -18,6 +18,7 @@ public class ServerConnectionThread extends Thread
 	
 	public void run()
 	{
+		String user = null;
 		System.out.println("Thread spun off!");
 		try
 		{
@@ -25,16 +26,16 @@ public class ServerConnectionThread extends Thread
 			Socket socket = currThread.getSocket();
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintWriter out = new PrintWriter(socket.getOutputStream());
-			String user = null;
 			
 			String input = in.readLine();
 			while (input != null)
 			{
 				System.out.println("Received value from " + socket.getInetAddress() + ": " + input);
 				
-				//calls methods in this class to notify other clients of events
+				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
+				
 				//add user
-	            if(input.substring(0, 1).compareTo("0") == 0 )
+	            if(msgCode == 0)
 	            {
 	                int splitLoc = input.indexOf(" ", 2);
 	                String from = input.substring(2,splitLoc);
@@ -42,7 +43,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO:add user
 	            }            
 	            //Logon
-	            else if(input.substring(0, 1).compareTo("1") == 0 && (input.substring(0, 2).compareTo("11") != 0 || input.substring(0, 2).compareTo("12") != 0 || input.substring(0, 2).compareTo("13") != 0 || input.substring(0, 2).compareTo("14") != 0))
+	            else if(msgCode == 1)
 	            {
 	                int splitLoc = input.indexOf(" ", 2);
 	                String from = input.substring(2,splitLoc);
@@ -50,13 +51,13 @@ public class ServerConnectionThread extends Thread
 	                //TODO:run logon check
 	            }
 	            //Logoff
-	            else if(input.substring(0,1).compareTo("2") == 0 )
+	            else if(msgCode == 2)
 	            {
 	                String from = input.substring(2);
 	                //TODO:logoff user
 	            }
 	            //Outgoing/Incoming Message
-	            else if(input.substring(0,1).compareTo("3") == 0)
+	            else if(msgCode == 3)
 	            {
 	                int splitLoc = input.indexOf(" ", 2);
 	                String from = input.substring(2,(splitLoc-2));
@@ -64,52 +65,20 @@ public class ServerConnectionThread extends Thread
 	                //TODO:get recipiant port
 	                //TODO:send to resipiant
 	            }
-	            //buddy logged on 
-	            else if(input.substring(0,1).compareTo("4") == 0)
-	            {
-	                String from = input.substring(2);
-	                //TODO:get recipiant port
-	                //TODO:add buddy to buddy list
-	            }
-	            //buddy logged off
-	            else if(input.substring(0,1).compareTo("5") == 0)
-	            {
-	                String from = input.substring(2);
-	                //TODO:get recipiant port
-	                //TODO:remmove buddy from buddy list
-	            }
 	            //logged on success
-	            else if(input.substring(0,1).compareTo("6") == 0)
+	            else if(msgCode == 6)
 	            {
 	                String from = input.substring(2);
 	                //TODO:show main screen
 	            }
 	            //logon faild
-	            else if(input.substring(0,1).compareTo("7") == 0)
+	            else if(msgCode == 7)
 	            {
 	                String from = input.substring(2);
 	                //TODO:show logon screen with error
 	            }            
-	            //add buddy
-	            else if(input.substring(0,1).compareTo("8") == 0)
-	            {
-	                int splitLoc = input.indexOf(" ", 2);
-	                String from = input.substring(2,splitLoc);
-	                String Reciptiant = input.substring(splitLoc);
-	                //TODO:get recipiant port
-	                //TODO:add buddy to buddy list
-	            }
-	            //remove buddy
-	            else if(input.substring(0,1).compareTo("9") == 0)
-	            {
-	                int splitLoc = input.indexOf(" ", 2);
-	                String from = input.substring(2,splitLoc);
-	                String Reciptiant = input.substring(splitLoc);
-	                //TODO:get recipiant port
-	                //TODO:remove buddy from buddy list
-	            }
 	            //typing
-	            else if(input.substring(0,2).compareTo("10") == 0)
+	            else if(msgCode == 10)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
 	                String from = input.substring(2,splitLoc);
@@ -118,7 +87,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO: display text saying that other user is typing
 	            }
 	            //entered text
-	            else if(input.substring(0,2).compareTo("11") == 0)
+	            else if(msgCode == 11)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
 	                String from = input.substring(2,splitLoc);
@@ -127,7 +96,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO: Other user has enterd data
 	            }
 	            //message failed
-	            else if(input.substring(0,2).compareTo("12") == 0)
+	            else if(msgCode == 12)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
 	                String from = input.substring(2,splitLoc);
@@ -135,8 +104,11 @@ public class ServerConnectionThread extends Thread
 	                //TODO:get sender port
 	                //TODO: return error message to sender
 	            }
+	            /*
+	             * Not sure about these two...
+	             */
 	            //Set Profile
-	            else if(input.substring(0,2).compareTo("13") == 0)
+	            else if(msgCode == 13)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
 	                String from = input.substring(2,splitLoc);
@@ -146,7 +118,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO: Update Profile
 	            }
 	            //Get Profile
-	            else if(input.substring(0,2).compareTo("14") == 0)
+	            else if(msgCode == 14)
 	            {
 	                String from = input.substring(3); 
 	                //TODO: give new window with profile info
@@ -168,7 +140,8 @@ public class ServerConnectionThread extends Thread
 		catch (Exception e)
 		{
 			System.err.println("Exception thrown!");
-			System.exit(1);
+			e.printStackTrace();
+			server.userSignOff(user);
 		}
 	}
 	
