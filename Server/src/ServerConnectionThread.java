@@ -14,12 +14,15 @@ public class ServerConnectionThread extends Thread
 		
 		this.server = server;
 		this.connection = connection;
+		String name = connection.getInetAddress().toString();
+		name = name.substring(name.indexOf("/")+1);
+		this.setName(name);
 	}
 	
 	public void run()
 	{
 		String user = null;
-		System.out.println("Thread spun off!");
+		System.out.println("Thread spun off for " + getName());
 		try
 		{
 			ServerConnectionThread currThread = (ServerConnectionThread) Thread.currentThread();
@@ -30,11 +33,13 @@ public class ServerConnectionThread extends Thread
 			String input = in.readLine();
 			while (input != null)
 			{
-				System.out.println("Received value from " + socket.getInetAddress() + ": " + input);
+				System.out.println("Received value from " + getName() + ": " + input);
 				
 				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
+				String msgBody = input.substring(input.indexOf(" "));
 				
 				//add user
+				//TODO
 	            if(msgCode == 0)
 	            {
 	                int splitLoc = input.indexOf(" ", 2);
@@ -45,18 +50,22 @@ public class ServerConnectionThread extends Thread
 	            //Logon
 	            else if(msgCode == 1)
 	            {
-	                int splitLoc = input.indexOf(" ", 2);
-	                String from = input.substring(2,splitLoc);
-	                String pass = input.substring(splitLoc);
-	                //TODO:run logon check
+	                String msgUsername = msgBody.substring(0, msgBody.indexOf(" "));
+	                String msgPassword = msgBody.substring(msgBody.indexOf(" ") + 1);
+	                if (server.userSignOn(msgUsername, msgPassword, out))
+	                user = msgUsername;
+	                else
+	                	break;
 	            }
 	            //Logoff
+				//TODO
 	            else if(msgCode == 2)
 	            {
 	                String from = input.substring(2);
 	                //TODO:logoff user
 	            }
 	            //Outgoing/Incoming Message
+				//TODO
 	            else if(msgCode == 3)
 	            {
 	                int splitLoc = input.indexOf(" ", 2);
@@ -66,18 +75,21 @@ public class ServerConnectionThread extends Thread
 	                //TODO:send to resipiant
 	            }
 	            //logged on success
+				//TODO
 	            else if(msgCode == 6)
 	            {
 	                String from = input.substring(2);
 	                //TODO:show main screen
 	            }
 	            //logon faild
+				//TODO
 	            else if(msgCode == 7)
 	            {
 	                String from = input.substring(2);
 	                //TODO:show logon screen with error
 	            }            
 	            //typing
+				//TODO
 	            else if(msgCode == 10)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
@@ -87,6 +99,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO: display text saying that other user is typing
 	            }
 	            //entered text
+				//TODO
 	            else if(msgCode == 11)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
@@ -96,6 +109,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO: Other user has enterd data
 	            }
 	            //message failed
+				//TODO
 	            else if(msgCode == 12)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
@@ -108,6 +122,7 @@ public class ServerConnectionThread extends Thread
 	             * Not sure about these two...
 	             */
 	            //Set Profile
+				//TODO
 	            else if(msgCode == 13)
 	            {
 	                int splitLoc = input.indexOf(" ", 3);
@@ -118,6 +133,7 @@ public class ServerConnectionThread extends Thread
 	                //TODO: Update Profile
 	            }
 	            //Get Profile
+				//TODO
 	            else if(msgCode == 14)
 	            {
 	                String from = input.substring(3); 

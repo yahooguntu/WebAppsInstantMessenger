@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 
 public class Client
@@ -40,12 +41,15 @@ public class Client
 	
 	private void loop()
 	{
-		sendMessage("hi");
-		System.out.println("sent message");
-//		while (true)
-//		{
-			
-//		}
+		System.out.println("Enter message:");
+		Scanner s = new Scanner(System.in);
+		s.useDelimiter("\n");
+		while (true)
+		{
+			writer.write(s.next() + "\n");
+			writer.flush();
+			System.out.println("Enter message:");
+		}
 	}
 	
 	public void sendMessage(String msg)
