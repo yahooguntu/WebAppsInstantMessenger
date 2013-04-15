@@ -6,6 +6,7 @@ public class BasicServer
 	private int listenPort;
 	private int maxConnections;
 	protected int numConnections;
+	private int inc = 1;
 
 	public BasicServer()
 	{
@@ -42,7 +43,19 @@ public class BasicServer
 		catch (IOException ioe )
 		{
 			System.out.println("Unable to listen on port "+listenPort);
-			ioe.printStackTrace();
+			if(inc < 100)
+			{
+				listenPort++;
+				inc++;
+			    System.out.println("Attemt[" + inc + "]: retrying conncection on new port...");
+			    start();				
+			}
+			else
+			{
+				listenPort -= 100;
+				System.out.println("Too many attempts. Try with a diferent port. ");
+			}
+			
 		}
 	}
 	
