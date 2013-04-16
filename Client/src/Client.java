@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 
-public class Client
+public class Client implements Runnable
 {
 	private static String hostname = "localhost";
 	private static int portNum = 4225;
@@ -17,7 +17,7 @@ public class Client
 	{
 		Client c = new Client();
 		
-		ChatWindow w = new ChatWindow("me");
+		//ChatWindow w = new ChatWindow("me");
 	}
 	
 	public Client()
@@ -28,6 +28,9 @@ public class Client
 			System.out.println("Bound to socket on port " + portNum);
 			writer = new PrintWriter(connection.getOutputStream(), true);
 			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			
+			Thread readerThread = new Thread(this);
+			readerThread.start();
 			
 			loop();
 		}
@@ -50,6 +53,34 @@ public class Client
 			writer.flush();
 			System.out.println("Enter message:");
 		}
+	}
+	
+	public void run()
+	{
+		BufferedReader in = null;
+		
+		try
+		{
+			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			
+			String input = in.readLine();
+			while (true)
+			{
+				if (input == null)
+					break;
+				
+				System.out.println("Message received: " + input);
+				
+				input = in.readLine();
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception thrown!");
+			e.printStackTrace();
+		}
+		
+		System.out.println("Thread suicide: reader thread");
 	}
 	
 	public void sendMessage(String msg)

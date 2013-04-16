@@ -63,7 +63,9 @@ extends BasicServer implements Runnable
 	{
 		if (checkPassword(user, password))
 		{
+			System.out.println("User is " + user + ", output is " + output.toString());
 			printWriters.put(user, output);
+			
 			try
 			{
 				dispatchQueue.put(new Event(1, user));
@@ -117,20 +119,17 @@ extends BasicServer implements Runnable
 	
 	public void userSignOff(String user)
 	{
-		if (user != null)
+		printWriters.remove(user);
+		try
 		{
+			dispatchQueue.put(new Event(2, user));
+			System.out.println("User " + user + " has signed out.");
 			printWriters.remove(user);
-			try
-			{
-				dispatchQueue.put(new Event(2, user));
-				System.out.println("User " + user + " has signed out.");
-				printWriters.remove(user);
-			}
-			catch (InterruptedException e)
-			{
-				System.err.println("User " + user + " failed to sign out!");
-				e.printStackTrace();
-			}
+		}
+		catch (InterruptedException e)
+		{
+			System.err.println("User " + user + " failed to sign out!");
+			e.printStackTrace();
 		}
 	}
 
@@ -142,16 +141,11 @@ extends BasicServer implements Runnable
 		System.out.println("Monitoring started.");
 	}
 	
-	public void onCloseConnection(String user)
+	public void onCloseConnection()
 	{
 		synchronized(this)
 		{
 			numConnections--;
-		}
-		
-		if (user != null)
-		{
-			
 		}
 	}
 	
