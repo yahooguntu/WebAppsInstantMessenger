@@ -20,6 +20,7 @@ extends BasicServer implements Runnable
 	{
 		super(4225, 0);
 		dispatchQueue = new ArrayBlockingQueue<Event>(20);
+		printWriters = new ConcurrentHashMap<String, PrintWriter>();
 		
 		// database connection stuff
 		try
