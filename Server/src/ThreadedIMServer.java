@@ -39,7 +39,6 @@ extends BasicServer implements Runnable
 			System.exit(2);
 		}
 		
-		System.out.println("Server started.");
 	}
 
 	public static void main(String[] args)

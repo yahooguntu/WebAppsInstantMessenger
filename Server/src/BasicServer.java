@@ -26,7 +26,8 @@ public class BasicServer
 		try
 		{
 			ServerSocket listenSocket = new ServerSocket (listenPort);
-
+			System.out.println("Server started.");
+			
 			while (true)
 			{
 				Socket newConnect;
@@ -39,6 +40,8 @@ public class BasicServer
 					serviceConnection(newConnect);
 				}
 			}
+			
+			
 		}
 		catch (IOException ioe )
 		{
