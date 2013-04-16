@@ -41,8 +41,6 @@ public class ServerConnectionThread extends Thread
 					System.out.println("Client disconnect: " + getName());
 					break;
 				}
-				
-				System.out.println("Received value from " + getName() + ": " + input);
 
 				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
 				String msgBody = input.substring(input.indexOf(" ") + 1);
@@ -59,6 +57,14 @@ public class ServerConnectionThread extends Thread
 				//Logon
 				else if(msgCode == 1)
 				{
+					//sign out if they're already signed in
+					if (user != null)
+					{
+						server.userSignOff(user);
+						server.queueEventDispatch(new Event(2, user));
+						user = null;
+					}
+					
 					String msgUsername = msgBody.substring(0, msgBody.indexOf(" ")).toLowerCase();
 					String msgPassword = msgBody.substring(msgBody.indexOf(" ") + 1);
 					if (server.userSignOn(msgUsername, msgPassword, out))
@@ -66,6 +72,7 @@ public class ServerConnectionThread extends Thread
 						user = msgUsername;
 						out.write("6 " + msgUsername + "\n");
 						out.flush();
+						server.queueEventDispatch(new Event(1, user));
 						System.out.println("User signed on: " + msgUsername);
 					}
 					else
@@ -79,7 +86,7 @@ public class ServerConnectionThread extends Thread
 				//TODO
 				else if(msgCode == 2)
 				{
-					String from = input.substring(2);
+					String msgUsername = msgBody;
 					//TODO:logoff user
 				}
 				//Outgoing/Incoming Message

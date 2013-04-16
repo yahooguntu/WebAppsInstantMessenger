@@ -21,8 +21,8 @@ public class Event
 	 */
 	
 	public int eventCode;
-	public String msg1;
-	public String msg2;
+	public String msg1 = null;
+	public String msg2 = null;
 	
 	Event(int eventCode, String msg1, String msg2)
 	{
@@ -33,5 +33,10 @@ public class Event
 	Event(int eventCode, String msg)
 	{
 		this.msg1 = msg;
+	}
+	
+	public String toString()
+	{
+		return "[code=" + eventCode + ",msg1=" + msg1 + ",msg2=" + msg2 + "]";
 	}
 }
