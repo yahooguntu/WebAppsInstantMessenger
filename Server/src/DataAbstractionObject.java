@@ -33,7 +33,7 @@ public class DataAbstractionObject
 	/*
 	 * Works!
 	 */
-	public boolean checkPassword(String user, String password)
+	public synchronized boolean checkPassword(String user, String password)
 	{
 		try
 		{
@@ -62,14 +62,14 @@ public class DataAbstractionObject
 		return false;
 	}
 	
-	public boolean addUser(String username, String password)
+	public synchronized boolean addUser(String username, String password)
 	{
 		System.out.println("Not actually adding a user...");
 		//TODO
 		return true;
 	}
 
-	public static String hash(String password, String salt, int iterations)
+	private static String hash(String password, String salt, int iterations)
 	{
 		password = salt + password;
 		
@@ -84,7 +84,7 @@ public class DataAbstractionObject
     /**
      * Copied from StackExchange.
      */
-    public static String hash(String password)
+    private static String hash(String password)
     {
             try
             {

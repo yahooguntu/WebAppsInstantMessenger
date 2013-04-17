@@ -116,8 +116,9 @@ public class ServerConnectionThread extends Thread
 				else if(msgCode == 3 && user != null)
 				{
 					int splitLoc = msgBody.indexOf(" ");
+					int splitLoc2 = msgBody.indexOf(" ", splitLoc);
 					
-					if (splitLoc == -1)
+					if (splitLoc == -1 || splitLoc2 == -1)
 					{
 						out.write("12" + msgBody);
 						out.flush();
@@ -125,14 +126,15 @@ public class ServerConnectionThread extends Thread
 					else
 					{
 						String sender = msgBody.substring(0, splitLoc).toLowerCase();
-						String recipient = msgBody.substring(splitLoc + 1).toLowerCase();
+						String recipient = msgBody.substring(splitLoc + 1, splitLoc2).toLowerCase();
+						String message = msgBody.substring(splitLoc2 + 1);
 						if (!user.equals(sender))
 						{
 							out.write("12" + msgBody);
 							out.flush();
 						}
 						else
-							server.queueEventDispatch(new Event(3, sender, recipient));
+							server.queueEventDispatch(new Event(3, sender, recipient, message));
 					}
 				}
 				//typing

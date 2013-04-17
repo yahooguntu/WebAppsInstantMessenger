@@ -23,6 +23,14 @@ public class Event
 	public int eventCode;
 	public String msg1 = null;
 	public String msg2 = null;
+	public String msg3 = null;
+	
+	Event(int eventCode, String msg1, String msg2, String msg3)
+	{
+		this.msg1 = msg1;
+		this.msg2 = msg2;
+		this.msg3 = msg3;
+	}
 	
 	Event(int eventCode, String msg1, String msg2)
 	{

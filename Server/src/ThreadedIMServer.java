@@ -22,6 +22,10 @@ extends BasicServer implements Runnable
 		dispatchQueue = new ArrayBlockingQueue<Event>(20);
 		printWriters = new ConcurrentHashMap<String, PrintWriter>();
 		dao = new DataAbstractionObject();
+		
+		// fire up the dispatcher
+		DispatcherThread dispatcher = new DispatcherThread(dispatchQueue, printWriters, dao);
+		dispatcher.start();
 	}
 
 	public static void main(String[] args)
@@ -31,10 +35,6 @@ extends BasicServer implements Runnable
 		// monitor heartbeat, etc.
 		ServerMonitorThread monitor = new ServerMonitorThread(myServer);
 		monitor.start();
-		
-		// fire up the dispatcher
-		DispatcherThread dispatcher = new DispatcherThread(myServer);
-		dispatcher.start();
 
 		// spins on ServerSocket
 		myServer.start();
