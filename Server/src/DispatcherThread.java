@@ -26,7 +26,8 @@ public class DispatcherThread extends Thread
 			try
 			{
 				Event e = queue.take();
-
+				PrintWriter destination = null;
+				
 				switch (e.eventCode)
 				{
 				//logon
@@ -41,11 +42,11 @@ public class DispatcherThread extends Thread
 
 					//message
 				case 3:
-					PrintWriter destination = printWriters.get(e.msg2);
+					destination = printWriters.get(e.msg2);
 					if (destination != null)
 					{
-						System.out.println("Dispatcher thread: Message from " + e.msg1 + " to " + e.msg2 + ": " + e.msg3 + "\n");
-						destination.write("3 " + e.msg1 + " " + e.msg2 + " " + e.msg3);
+						System.out.println("Dispatcher thread: Message from " + e.msg1 + " to " + e.msg2 + ": " + e.msg3.substring(0, e.msg3.length()) + "\n");
+						destination.write("3 " + e.msg1 + " " + e.msg2 + " " + e.msg3 + "\n");
 						destination.flush();
 					}
 					else
@@ -62,12 +63,32 @@ public class DispatcherThread extends Thread
 
 					//typing
 				case 10:
-					System.out.println("Dispatcher thread: " + e.msg1 + " is typing");
+					destination = printWriters.get(e.msg2);
+					if (destination != null)
+					{
+						System.out.println("Dispatcher thread: " + e.msg1 + " is typing at " + e.msg2 + "\n");
+						destination.write("10 " + e.msg1 + " " + e.msg2 + "\n");
+						destination.flush();
+					}
+					else
+					{
+						System.out.println("Dispatcher thread: " + e.msg2 + " isn't online!");
+					}
 					break;
 
 					//entered text
 				case 11:
-					System.out.println("Dispatcher thread: " + e.msg1 + " has entered text");
+					destination = printWriters.get(e.msg2);
+					if (destination != null)
+					{
+						System.out.println("Dispatcher thread: " + e.msg1 + " has entered text for " + e.msg2 + "\n");
+						destination.write("10 " + e.msg1 + " " + e.msg2 + "\n");
+						destination.flush();
+					}
+					else
+					{
+						System.out.println("Dispatcher thread: " + e.msg2 + " isn't online!");
+					}
 					break;
 
 				default:

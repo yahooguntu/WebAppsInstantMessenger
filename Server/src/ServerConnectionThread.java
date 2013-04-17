@@ -123,7 +123,7 @@ public class ServerConnectionThread extends Thread
 					
 					if (splitLoc == -1 || splitLoc2 == -1)
 					{
-						out.write("12" + msgBody);
+						out.write("12" + msgBody + "\n");
 						out.flush();
 					}
 					else
@@ -133,7 +133,7 @@ public class ServerConnectionThread extends Thread
 						String message = msgBody.substring(splitLoc2 + 1);
 						if (!user.equals(sender))
 						{
-							out.write("12" + msgBody);
+							out.write("12" + msgBody + "\n");
 							out.flush();
 						}
 						else
