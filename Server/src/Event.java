@@ -27,6 +27,7 @@ public class Event
 	
 	Event(int eventCode, String msg1, String msg2, String msg3)
 	{
+		this.eventCode = eventCode;
 		this.msg1 = msg1;
 		this.msg2 = msg2;
 		this.msg3 = msg3;
@@ -34,12 +35,14 @@ public class Event
 	
 	Event(int eventCode, String msg1, String msg2)
 	{
+		this.eventCode = eventCode;
 		this.msg1 = msg1;
 		this.msg2 = msg2;
 	}
 	
 	Event(int eventCode, String msg)
 	{
+		this.eventCode = eventCode;
 		this.msg1 = msg;
 	}
 	

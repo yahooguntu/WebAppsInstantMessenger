@@ -32,7 +32,7 @@ public class ServerConnectionThread extends Thread
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream());
 
-			String input = in.readLine().toLowerCase();
+			String input = in.readLine();
 			//TODO this needs a timeout of some sort
 			while (true)
 			{
@@ -41,6 +41,8 @@ public class ServerConnectionThread extends Thread
 					System.out.println("Client disconnect: " + getName());
 					break;
 				}
+				
+				input = input.toLowerCase();
 
 				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
 				String msgBody = input.substring(input.indexOf(" ") + 1);
@@ -189,7 +191,7 @@ public class ServerConnectionThread extends Thread
 					//TODO: give new window with profile info
 				}
 
-				input = in.readLine().toLowerCase();
+				input = in.readLine();
 			}
 		}
 		catch (StringIndexOutOfBoundsException e)

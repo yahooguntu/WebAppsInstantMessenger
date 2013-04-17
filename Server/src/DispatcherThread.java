@@ -55,7 +55,7 @@ public class DispatcherThread extends Thread
 					break;
 
 				default:
-					System.out.println("Dispatcher thread: Unknown eventCode " + e.eventCode);
+					System.out.println("Dispatcher thread: Unknown eventCode: " + e.toString());
 					break;
 				}
 			}

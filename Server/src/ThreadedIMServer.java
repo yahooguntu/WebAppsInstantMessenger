@@ -60,43 +60,13 @@ extends BasicServer implements Runnable
 	
 	public boolean userSignOn(String user, String password, PrintWriter output)
 	{
-		if (dao.checkPassword(user, password))
-		{
-			printWriters.put(user, output);
-			
-			try
-			{
-				dispatchQueue.put(new Event(1, user));
-				return true;
-			}
-			catch (InterruptedException e)
-			{
-				output.write("7 " + user + "\n");
-				System.err.println("User " + user + " failed to sign in!");
-				e.printStackTrace();
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
+		printWriters.put(user, output);
+		return dao.checkPassword(user, password);
 	}
 	
 	public void userSignOff(String user)
 	{
 		printWriters.remove(user);
-		try
-		{
-			dispatchQueue.put(new Event(2, user));
-			System.out.println("User " + user + " has signed out.");
-			printWriters.remove(user);
-		}
-		catch (InterruptedException e)
-		{
-			System.err.println("User " + user + " failed to sign out!");
-			e.printStackTrace();
-		}
 	}
 	
 	public boolean addUser(String username, String password)
