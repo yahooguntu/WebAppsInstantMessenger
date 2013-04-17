@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
 /**
  *
@@ -21,25 +25,54 @@ public class Chat_gui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        conversation = new javax.swing.JTextPane();
+        jFrame1 = new javax.swing.JFrame();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTree1 = new javax.swing.JTree();
         jScrollPane2 = new javax.swing.JScrollPane();
         Message = new javax.swing.JTextArea();
         Send = new javax.swing.JButton();
         Enter_send = new javax.swing.JCheckBox();
         chat_with_label = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        conversationPane = new javax.swing.JTextPane();
+
+        javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
+        jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1Layout.setHorizontalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+        jFrame1Layout.setVerticalGroup(
+            jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+
+        jScrollPane3.setViewportView(jTree1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jScrollPane1.setViewportView(conversation);
-
         Message.setColumns(20);
         Message.setRows(5);
+        Message.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                MessageKeyTyped(evt);
+            }
+        });
         jScrollPane2.setViewportView(Message);
 
         Send.setText("Send");
+        Send.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SendMouseClicked(evt);
+            }
+        });
 
         Enter_send.setText("send on Enter");
+        Enter_send.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                Enter_sendStateChanged(evt);
+            }
+        });
         Enter_send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 Enter_sendActionPerformed(evt);
@@ -48,29 +81,34 @@ public class Chat_gui extends javax.swing.JFrame {
 
         chat_with_label.setText("jLabel1");
 
+        conversationPane.setEditable(false);
+        jScrollPane4.setViewportView(conversationPane);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(245, Short.MAX_VALUE)
-                .addComponent(Enter_send)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Send)
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(chat_with_label)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 232, Short.MAX_VALUE)
+                        .addComponent(Enter_send)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(Send))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(chat_with_label)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addComponent(jScrollPane1)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane4)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(chat_with_label)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -85,6 +123,18 @@ public class Chat_gui extends javax.swing.JFrame {
     private void Enter_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Enter_sendActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_Enter_sendActionPerformed
+
+    private void Enter_sendStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_Enter_sendStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_Enter_sendStateChanged
+
+    private void SendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SendMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_SendMouseClicked
+
+    private void MessageKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MessageKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MessageKeyTyped
 
     /**
      * @param args the command line arguments
@@ -125,8 +175,11 @@ public class Chat_gui extends javax.swing.JFrame {
     private javax.swing.JTextArea Message;
     private javax.swing.JButton Send;
     private javax.swing.JLabel chat_with_label;
-    private javax.swing.JTextPane conversation;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextPane conversationPane;
+    private javax.swing.JFrame jFrame1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }
