@@ -1,4 +1,5 @@
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,14 +31,17 @@ public class DispatcherThread extends Thread
 				
 				switch (e.eventCode)
 				{
-				//logon
+					//logon
 				case 1:
 					System.out.println("Dispatcher thread: Logon by " + e.msg1);
+					sendToBuddies(e.msg1, "4 " + e.msg1 + "\n");
+					sendInitialBuddies(e.msg1);
 					break;
 
 					//logoff
 				case 2:
 					System.out.println("Dispatcher thread: Logoff by " + e.msg1);
+					sendToBuddies(e.msg1, "5 " + e.msg1 + "\n");
 					break;
 
 					//message
@@ -87,12 +91,12 @@ public class DispatcherThread extends Thread
 					}
 					else
 					{
-						System.out.println("Dispatcher thread: " + e.msg2 + " isn't online!");
+						System.err.println("Dispatcher thread: No PrintWriter found for " + e.msg2 + "!");
 					}
 					break;
 
 				default:
-					System.out.println("Dispatcher thread: Unknown eventCode: " + e.toString());
+					System.err.println("Dispatcher thread: Unknown eventCode: " + e.toString());
 					break;
 				}
 			}
@@ -107,5 +111,40 @@ public class DispatcherThread extends Thread
 			}
 		}
 
+	}
+	
+	private void sendToBuddies(String user, String msg)
+	{
+		ArrayList<String> buddies = dao.getBuddies(user);
+		for (String b : buddies)
+		{
+			PrintWriter w = printWriters.get(b);
+			if (w != null)
+			{
+				w.write(msg);
+				w.flush();
+			}
+			else
+				System.err.println("Dispatcher thread: No Printwriter found for " + user + "!");
+		}
+	}
+	
+	private void sendInitialBuddies(String user)
+	{
+		ArrayList<String> buddies = dao.getBuddies(user);
+		PrintWriter userStream = printWriters.get(user);
+		
+		if (userStream == null)
+		{
+			System.err.println("Dispatcher thread: No Printwriter found for " + user + "!");
+			return;
+		}
+		
+		for (String b : buddies)
+		{
+			if (printWriters.containsKey(b))
+				userStream.write("4 " + b + "\n");
+			userStream.flush();
+		}
 	}
 }
