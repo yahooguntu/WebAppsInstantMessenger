@@ -31,6 +31,10 @@ extends BasicServer implements Runnable
 		// monitor heartbeat, etc.
 		ServerMonitorThread monitor = new ServerMonitorThread(myServer);
 		monitor.start();
+		
+		// fire up the dispatcher
+		DispatcherThread dispatcher = new DispatcherThread(myServer);
+		dispatcher.start();
 
 		// spins on ServerSocket
 		myServer.start();
@@ -93,6 +97,11 @@ extends BasicServer implements Runnable
 			System.err.println("User " + user + " failed to sign out!");
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean addUser(String username, String password)
+	{
+		return dao.addUser(username, password);
 	}
 
 	/*

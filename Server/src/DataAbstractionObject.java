@@ -61,6 +61,13 @@ public class DataAbstractionObject
 		
 		return false;
 	}
+	
+	public boolean addUser(String username, String password)
+	{
+		System.out.println("Not actually adding a user...");
+		//TODO
+		return true;
+	}
 
 	public static String hash(String password, String salt, int iterations)
 	{

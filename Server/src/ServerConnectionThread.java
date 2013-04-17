@@ -32,7 +32,7 @@ public class ServerConnectionThread extends Thread
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream());
 
-			String input = in.readLine();
+			String input = in.readLine().toLowerCase();
 			//TODO this needs a timeout of some sort
 			while (true)
 			{
@@ -46,14 +46,37 @@ public class ServerConnectionThread extends Thread
 				String msgBody = input.substring(input.indexOf(" ") + 1);
 
 				//add user
-				//TODO
 				if(msgCode == 0)
 				{
-					int splitLoc = input.indexOf(" ", 2);
-					String from = input.substring(2,splitLoc);
-					String pass = input.substring(splitLoc);
-					//TODO:add user
-				}			
+					//sign out if they're already signed in
+					if (user != null)
+					{
+						server.userSignOff(user);
+						server.queueEventDispatch(new Event(2, user));
+						user = null;
+					}
+					
+					int splitLoc = input.indexOf(" ");
+					String msgUsername = input.substring(0, splitLoc);
+					String msgPassword = input.substring(splitLoc + 1);
+					server.addUser(msgUsername, msgPassword);
+					
+					//do a login
+					if (server.userSignOn(msgUsername, msgPassword, out))
+					{
+						user = msgUsername;
+						out.write("6 " + msgUsername + "\n");
+						out.flush();
+						server.queueEventDispatch(new Event(1, user));
+						System.out.println("User signed on: " + msgUsername);
+					}
+					else
+					{
+						out.write("7 " + msgUsername + "\n");
+						out.flush();
+						System.out.println("Incorrect password for user " + msgUsername);
+					}
+				}
 				//Logon
 				else if(msgCode == 1)
 				{
@@ -83,39 +106,38 @@ public class ServerConnectionThread extends Thread
 					}
 				}
 				//Logoff
-				//TODO
-				else if(msgCode == 2)
+				else if(msgCode == 2 && user != null && user.equals(msgBody))
 				{
-					String msgUsername = msgBody;
-					//TODO:logoff user
+					server.userSignOff(user);
+					server.queueEventDispatch(new Event(2, user));
+					user = null;
 				}
 				//Outgoing/Incoming Message
-				//TODO
-				else if(msgCode == 3)
+				else if(msgCode == 3 && user != null)
 				{
-					int splitLoc = input.indexOf(" ", 2);
-					String from = input.substring(2,(splitLoc-2));
-					String Reciptiant = input.substring(splitLoc, (input.indexOf(" ", splitLoc)-splitLoc));
-					//TODO:get recipiant port
-					//TODO:send to resipiant
+					int splitLoc = msgBody.indexOf(" ");
+					
+					if (splitLoc == -1)
+					{
+						out.write("12" + msgBody);
+						out.flush();
+					}
+					else
+					{
+						String sender = msgBody.substring(0, splitLoc).toLowerCase();
+						String recipient = msgBody.substring(splitLoc + 1).toLowerCase();
+						if (!user.equals(sender))
+						{
+							out.write("12" + msgBody);
+							out.flush();
+						}
+						else
+							server.queueEventDispatch(new Event(3, sender, recipient));
+					}
 				}
-				//logged on success
-				//TODO
-				else if(msgCode == 6)
-				{
-					String from = input.substring(2);
-					//TODO:show main screen
-				}
-				//logon faild
-				//TODO
-				else if(msgCode == 7)
-				{
-					String from = input.substring(2);
-					//TODO:show logon screen with error
-				}			
 				//typing
 				//TODO
-				else if(msgCode == 10)
+				else if(msgCode == 10 && user != null)
 				{
 					int splitLoc = input.indexOf(" ", 3);
 					String from = input.substring(2,splitLoc);
@@ -125,7 +147,7 @@ public class ServerConnectionThread extends Thread
 				}
 				//entered text
 				//TODO
-				else if(msgCode == 11)
+				else if(msgCode == 11 && user != null)
 				{
 					int splitLoc = input.indexOf(" ", 3);
 					String from = input.substring(2,splitLoc);
@@ -135,7 +157,7 @@ public class ServerConnectionThread extends Thread
 				}
 				//message failed
 				//TODO
-				else if(msgCode == 12)
+				else if(msgCode == 12 && user != null)
 				{
 					int splitLoc = input.indexOf(" ", 3);
 					String from = input.substring(2,splitLoc);
@@ -165,7 +187,7 @@ public class ServerConnectionThread extends Thread
 					//TODO: give new window with profile info
 				}
 
-				input = in.readLine();
+				input = in.readLine().toLowerCase();
 			}
 		}
 		catch (StringIndexOutOfBoundsException e)
