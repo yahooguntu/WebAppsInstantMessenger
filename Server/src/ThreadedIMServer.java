@@ -13,7 +13,7 @@ public class ThreadedIMServer
 extends BasicServer implements Runnable
 {
 	private BlockingQueue<Event> dispatchQueue;
-	private ConcurrentHashMap<String, PrintWriter> printWriters;
+	public ConcurrentHashMap<String, PrintWriter> printWriters;
 	private DataAbstractionObject dao;
 	
 	public ThreadedIMServer()

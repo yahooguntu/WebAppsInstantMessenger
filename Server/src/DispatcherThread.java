@@ -41,7 +41,23 @@ public class DispatcherThread extends Thread
 
 					//message
 				case 3:
-					System.out.println("Dispatcher thread: Message from " + e.msg1 + " to " + e.msg2 + ": " + e.msg3);
+					PrintWriter destination = printWriters.get(e.msg2);
+					if (destination != null)
+					{
+						System.out.println("Dispatcher thread: Message from " + e.msg1 + " to " + e.msg2 + ": " + e.msg3 + "\n");
+						destination.write("3 " + e.msg1 + " " + e.msg2 + " " + e.msg3);
+						destination.flush();
+					}
+					else
+					{
+						System.out.println("Dispatcher thread: Message could not be sent from " + e.msg1 + " to " + e.msg2 + "!");
+						destination = printWriters.get(e.msg1);
+						if (destination != null)
+						{
+							destination.write("12 " + e.msg1 + " " + e.msg2 + " " + e.msg3 + "\n");
+							destination.flush();
+						}
+					}
 					break;
 
 					//typing
