@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 
 public class DataAbstractionObject
@@ -64,9 +65,28 @@ public class DataAbstractionObject
 	
 	public synchronized boolean addUser(String username, String password)
 	{
-		System.out.println("Not actually adding a user...");
-		//TODO
-		return true;
+		System.out.println("DAO: adding user " + username);
+		password = hash(password, hash(UUID.randomUUID() + "jf298UF(*&Y872ty97Y*76t239Gy9272" + username), 100000);
+		
+		try
+		{
+			//add the user to the database
+			connection.createStatement().executeUpdate("INSERT INTO `burst_ppl_User` VALUES ('" + java.net.URLEncoder.encode(username, "ASCII") + "', '" + password + "')");
+			
+			return true;
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Something went horribly wrong!");
+			e.printStackTrace();
+			System.exit(3);
+		}
+		
+		return false;
 	}
 
 	private static String hash(String password, String salt, int iterations)

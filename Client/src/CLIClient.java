@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 
-public class Client implements Runnable
+public class CLIClient implements Runnable
 {
 	private static String hostname = "localhost";
 	private static int portNum = 4225;
@@ -15,12 +15,12 @@ public class Client implements Runnable
 	
 	public static void main(String[] args)
 	{
-		Client c = new Client();
+		CLIClient c = new CLIClient();
 		
 		//ChatWindow w = new ChatWindow("me");
 	}
 	
-	public Client()
+	public CLIClient()
 	{
 		try
 		{

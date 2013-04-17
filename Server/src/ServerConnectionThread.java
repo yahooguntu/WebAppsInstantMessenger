@@ -24,6 +24,7 @@ public class ServerConnectionThread extends Thread
 		String user = null;
 		BufferedReader in = null;
 		PrintWriter out = null;
+		String input = null;
 		System.out.println("Thread spun off for " + getName());
 		try
 		{
@@ -32,7 +33,7 @@ public class ServerConnectionThread extends Thread
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream());
 
-			String input = in.readLine();
+			input = in.readLine();
 			//TODO this needs a timeout of some sort
 			while (true)
 			{
@@ -58,9 +59,9 @@ public class ServerConnectionThread extends Thread
 						user = null;
 					}
 					
-					int splitLoc = input.indexOf(" ");
-					String msgUsername = input.substring(0, splitLoc);
-					String msgPassword = input.substring(splitLoc + 1);
+					int splitLoc = msgBody.indexOf(" ");
+					String msgUsername = msgBody.substring(0, splitLoc);
+					String msgPassword = msgBody.substring(splitLoc + 1);
 					server.addUser(msgUsername, msgPassword);
 					
 					//do a login
@@ -118,7 +119,7 @@ public class ServerConnectionThread extends Thread
 				else if(msgCode == 3 && user != null)
 				{
 					int splitLoc = msgBody.indexOf(" ");
-					int splitLoc2 = msgBody.indexOf(" ", splitLoc);
+					int splitLoc2 = msgBody.indexOf(" ", splitLoc + 1);
 					
 					if (splitLoc == -1 || splitLoc2 == -1)
 					{
@@ -196,7 +197,7 @@ public class ServerConnectionThread extends Thread
 		}
 		catch (StringIndexOutOfBoundsException e)
 		{
-			System.out.println("Invalid message format from " + getName());
+			System.out.println("Invalid message format from " + getName() + ": " + input);
 		}
 		catch (Exception e)
 		{
