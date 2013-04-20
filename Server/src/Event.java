@@ -48,6 +48,6 @@ public class Event
 	
 	public String toString()
 	{
-		return "[code=" + eventCode + ",msg1=" + msg1 + ",msg2=" + msg2 + "]";
+		return "[code=" + eventCode + ",msg1=" + msg1 + ",msg2=" + msg2 + ",msg3=" + msg3 + "]";
 	}
 }

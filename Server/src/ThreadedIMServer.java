@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.sql.*;
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -79,13 +80,62 @@ extends BasicServer implements Runnable
 	{
 		return dao.addUser(username, password);
 	}
+	
+	public boolean isLoggedOn(String user)
+	{
+		return printWriters.containsKey(user);
+	}
 
 	/*
 	 * The realm of the monitor thread!
 	 */
 	public void run()
 	{
-		System.out.println("Monitoring started.");
+		System.out.println("Console started!");
+		
+		Scanner s = new Scanner(System.in);
+		s.useDelimiter("\n");
+		System.out.print(": ");
+		while (true)
+		{
+			String input = s.next();
+			String[] cmd = input.split("[ \n]");
+			try
+			{
+				if (cmd[0].equals("say"))
+				{
+					String msg = "";
+					for (int i = 2; i < cmd.length; i++)
+						msg += cmd[i];
+
+					dispatchQueue.put(new Event(3, "Server", cmd[1], msg));
+				}
+				else if (cmd[0].equals("broadcast"))
+				{
+					String msg = "";
+					for (int i = 1; i < cmd.length; i++)
+						msg += cmd[i];
+					
+					for (String user : printWriters.keySet())
+					{
+						dispatchQueue.put(new Event(3, "Server", user, msg));
+					}
+				}
+				else
+					System.out.println("Malformed Command! Use 'say [user] [message]' or 'broadcast [message]'.");
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			System.out.print(": ");
+		}
 	}
 	
 	public void onCloseConnection()

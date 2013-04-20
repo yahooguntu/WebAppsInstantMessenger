@@ -91,7 +91,7 @@ public class DispatcherThread extends Thread
 					}
 					else
 					{
-						System.err.println("Dispatcher thread: No PrintWriter found for " + e.msg2 + "!");
+						System.err.println("Dispatcher thread (switch): No PrintWriter found for " + e.msg2 + "!");
 					}
 					break;
 
@@ -124,8 +124,6 @@ public class DispatcherThread extends Thread
 				w.write(msg);
 				w.flush();
 			}
-			else
-				System.err.println("Dispatcher thread: No Printwriter found for " + user + "!");
 		}
 	}
 	
@@ -136,7 +134,7 @@ public class DispatcherThread extends Thread
 		
 		if (userStream == null)
 		{
-			System.err.println("Dispatcher thread: No Printwriter found for " + user + "!");
+			System.err.println("Dispatcher thread (sendInitialBuddies): No Printwriter found for " + user + "!");
 			return;
 		}
 		

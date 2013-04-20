@@ -62,10 +62,14 @@ public class ServerConnectionThread extends Thread
 					int splitLoc = msgBody.indexOf(" ");
 					String msgUsername = msgBody.substring(0, splitLoc);
 					String msgPassword = msgBody.substring(splitLoc + 1);
-					server.addUser(msgUsername, msgPassword);
-					
+					if (!server.addUser(msgUsername, msgPassword))
+					{
+						out.write("7 " + msgUsername + "\n");
+						out.flush();
+						System.out.println("Username taken: " + msgUsername);
+					}
+					else if (!server.isLoggedOn(msgUsername) && server.userSignOn(msgUsername, msgPassword, out))
 					//do a login
-					if (server.userSignOn(msgUsername, msgPassword, out))
 					{
 						user = msgUsername;
 						out.write("6 " + msgUsername + "\n");
@@ -77,7 +81,7 @@ public class ServerConnectionThread extends Thread
 					{
 						out.write("7 " + msgUsername + "\n");
 						out.flush();
-						System.out.println("Incorrect password for user " + msgUsername);
+						System.out.println("Incorrect password or already signed in: " + msgUsername);
 					}
 				}
 				//Logon
@@ -93,7 +97,7 @@ public class ServerConnectionThread extends Thread
 					
 					String msgUsername = msgBody.substring(0, msgBody.indexOf(" ")).toLowerCase();
 					String msgPassword = msgBody.substring(msgBody.indexOf(" ") + 1);
-					if (server.userSignOn(msgUsername, msgPassword, out))
+					if (!server.isLoggedOn(msgUsername) && server.userSignOn(msgUsername, msgPassword, out))
 					{
 						user = msgUsername;
 						out.write("6 " + msgUsername + "\n");
@@ -105,7 +109,7 @@ public class ServerConnectionThread extends Thread
 					{
 						out.write("7 " + msgUsername + "\n");
 						out.flush();
-						System.out.println("Incorrect password for user " + msgUsername);
+						System.out.println("Incorrect password or already signed in: " + msgUsername);
 					}
 				}
 				//Logoff
@@ -123,7 +127,7 @@ public class ServerConnectionThread extends Thread
 					
 					if (splitLoc == -1 || splitLoc2 == -1)
 					{
-						out.write("12" + msgBody + "\n");
+						out.write("12 " + msgBody + "\n");
 						out.flush();
 					}
 					else
