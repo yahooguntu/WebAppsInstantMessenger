@@ -37,9 +37,9 @@ public class ServerConnectionThread extends Thread
 			//TODO this needs a timeout of some sort
 			while (true)
 			{
+				//die if the connection is closed
 				if (input == null)
 				{
-					System.out.println("Client disconnect: " + getName());
 					break;
 				}
 				
@@ -47,6 +47,7 @@ public class ServerConnectionThread extends Thread
 
 				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
 				String msgBody = input.substring(input.indexOf(" ") + 1);
+				String[] body = msgBody.split("[ \n]");
 
 				//add user
 				if(msgCode == 0)
@@ -75,7 +76,6 @@ public class ServerConnectionThread extends Thread
 						out.write("6 " + msgUsername + "\n");
 						out.flush();
 						server.queueEventDispatch(new Event(1, user));
-						System.out.println("User signed on: " + msgUsername);
 					}
 					else
 					{
@@ -103,7 +103,6 @@ public class ServerConnectionThread extends Thread
 						out.write("6 " + msgUsername + "\n");
 						out.flush();
 						server.queueEventDispatch(new Event(1, user));
-						System.out.println("User signed on: " + msgUsername);
 					}
 					else
 					{
@@ -137,42 +136,32 @@ public class ServerConnectionThread extends Thread
 						String message = msgBody.substring(splitLoc2 + 1);
 						if (!user.equals(sender))
 						{
-							out.write("12" + msgBody + "\n");
+							out.write("12 " + msgBody + "\n");
 							out.flush();
 						}
 						else
 							server.queueEventDispatch(new Event(3, sender, recipient, message));
 					}
 				}
-				//typing
-				//TODO
-				else if(msgCode == 10 && user != null)
+				//add buddy
+				else if(msgCode == 8 && user != null && body.length == 2 && body[0].equals(user))
 				{
-					int splitLoc = input.indexOf(" ", 3);
-					String from = input.substring(2,splitLoc);
-					String Reciptiant = input.substring(splitLoc);
-					//TODO:get recipiant port
-					//TODO: display text saying that other user is typing
+					server.queueEventDispatch(new Event(8, user, body[1]));
+				}
+				//remove buddy
+				else if(msgCode == 9 && user != null && body.length == 2 && body[0].equals(user))
+				{
+					server.queueEventDispatch(new Event(9, user, body[1]));
+				}
+				//typing
+				else if(msgCode == 10 && user != null && body.length == 2 && body[0].equals(user))
+				{
+					server.queueEventDispatch(new Event(10, user, body[1]));
 				}
 				//entered text
-				//TODO
-				else if(msgCode == 11 && user != null)
+				else if(msgCode == 11 && user != null && body.length == 2 && body[0].equals(user))
 				{
-					int splitLoc = input.indexOf(" ", 3);
-					String from = input.substring(2,splitLoc);
-					String Reciptiant = input.substring(splitLoc);
-					//TODO:get recipiant port
-					//TODO: Other user has enterd data
-				}
-				//message failed
-				//TODO
-				else if(msgCode == 12 && user != null)
-				{
-					int splitLoc = input.indexOf(" ", 3);
-					String from = input.substring(2,splitLoc);
-					String Reciptiant = input.substring(splitLoc, (input.indexOf(" ", splitLoc)-splitLoc));
-					//TODO:get sender port
-					//TODO: return error message to sender
+					server.queueEventDispatch(new Event(11, user, body[1]));
 				}
 				/*
 				 * Not sure about these two...
@@ -181,19 +170,13 @@ public class ServerConnectionThread extends Thread
 				//TODO
 				else if(msgCode == 13)
 				{
-					int splitLoc = input.indexOf(" ", 3);
-					String from = input.substring(2,splitLoc);
-					int secondSplit = input.indexOf(" ", splitLoc);
-					String password = input.substring(splitLoc, secondSplit-splitLoc);
-					String text = input.substring(secondSplit);
-					//TODO: Update Profile
+					
 				}
 				//Get Profile
 				//TODO
 				else if(msgCode == 14)
 				{
-					String from = input.substring(3); 
-					//TODO: give new window with profile info
+					
 				}
 
 				input = in.readLine();

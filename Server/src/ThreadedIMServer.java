@@ -100,34 +100,27 @@ extends BasicServer implements Runnable
 		{
 			String input = s.next();
 			String[] cmd = input.split("[ \n]");
-			try
+			if (cmd[0].equals("say"))
 			{
-				if (cmd[0].equals("say"))
-				{
-					String msg = "";
-					for (int i = 2; i < cmd.length; i++)
-						msg += cmd[i];
+				String msg = "";
+				for (int i = 2; i < cmd.length; i++)
+					msg += cmd[i];
 
-					dispatchQueue.put(new Event(3, "Server", cmd[1], msg));
-				}
-				else if (cmd[0].equals("broadcast"))
-				{
-					String msg = "";
-					for (int i = 1; i < cmd.length; i++)
-						msg += cmd[i];
-					
-					for (String user : printWriters.keySet())
-					{
-						dispatchQueue.put(new Event(3, "Server", user, msg));
-					}
-				}
-				else
-					System.out.println("Malformed Command! Use 'say [user] [message]' or 'broadcast [message]'.");
+				queueEventDispatch(new Event(3, "Server", cmd[1], msg));
 			}
-			catch (InterruptedException e)
+			else if (cmd[0].equals("broadcast"))
 			{
-				e.printStackTrace();
+				String msg = "";
+				for (int i = 1; i < cmd.length; i++)
+					msg += cmd[i] + " ";
+
+				for (String user : printWriters.keySet())
+				{
+					queueEventDispatch(new Event(3, "Server", user, msg));
+				}
 			}
+			else
+				System.out.println("Malformed Command! Use 'say [user] [message]' or 'broadcast [message]'.");
 			
 			try {
 				Thread.sleep(100);

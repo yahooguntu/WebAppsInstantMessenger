@@ -40,11 +40,40 @@ public class DataAbstractionObject
 		{
 			//get the hash from the db and protect against sql injection
 			ResultSet result;
-			result = connection.createStatement().executeQuery("SELECT buddyname FROM `burst_ppl_Buddy` WHERE `username` = '" + java.net.URLEncoder.encode(user, "ASCII") + "'");
+			result = connection.createStatement().executeQuery("SELECT `buddyname` FROM `burst_ppl_Buddy` WHERE `username` = '" + java.net.URLEncoder.encode(user, "ASCII") + "'");
 			
 			while (result.next())
 			{
 				buddies.add(result.getString("buddyname"));
+			}
+		}
+		catch (SQLException e)
+		{
+			return buddies;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Something went horribly wrong!");
+			e.printStackTrace();
+			System.exit(3);
+		}
+		
+		return buddies;
+	}
+	
+	public synchronized ArrayList<String> getFollowers(String user)
+	{
+		ArrayList<String> buddies = new ArrayList(10);
+		
+		try
+		{
+			//get the hash from the db and protect against sql injection
+			ResultSet result;
+			result = connection.createStatement().executeQuery("SELECT `username` FROM `burst_ppl_Buddy` WHERE `buddyname` = '" + java.net.URLEncoder.encode(user, "ASCII") + "'");
+			
+			while (result.next())
+			{
+				buddies.add(result.getString("username"));
 			}
 		}
 		catch (SQLException e)
@@ -98,7 +127,7 @@ public class DataAbstractionObject
 	 */
 	public synchronized boolean addUser(String username, String password)
 	{
-		System.out.println("DAO: adding user " + username);
+		System.out.println("DAO: adding user " + username + "\n: ");
 		password = hash(password, hash(UUID.randomUUID() + "jf298UF(*&Y872ty97Y*76t239Gy9272" + username), 100000);
 		
 		try
@@ -110,6 +139,54 @@ public class DataAbstractionObject
 		}
 		catch (SQLException e)
 		{
+			return false;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Something went horribly wrong!");
+			e.printStackTrace();
+			System.exit(3);
+		}
+		
+		return false;
+	}
+	
+	public synchronized boolean addBuddy(String username, String buddy)
+	{
+		try
+		{
+			//add the user to the database
+			connection.createStatement().executeUpdate("INSERT INTO `burst_ppl_Buddy` VALUES ('" + java.net.URLEncoder.encode(username, "ASCII") + "', '" + java.net.URLEncoder.encode(buddy, "ASCII") + "')");
+			
+			System.out.println("DAO: " + username + " is now buddies with " + buddy + "\n: ");
+			return true;
+		}
+		catch (SQLException e)
+		{
+			return false;
+		}
+		catch (Exception e)
+		{
+			System.err.println("Something went horribly wrong!");
+			e.printStackTrace();
+			System.exit(3);
+		}
+		
+		return false;
+	}
+	
+	public synchronized boolean removeBuddy(String username, String buddy)
+	{
+		try
+		{
+			//add the user to the database
+			connection.createStatement().executeUpdate("DELETE FROM `burst_ppl_Buddy` WHERE `username` = '" + java.net.URLEncoder.encode(username, "ASCII") + "' AND `buddyname` = '" + java.net.URLEncoder.encode(buddy, "ASCII") + "'");
+			
+			return true;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
 			return false;
 		}
 		catch (Exception e)
