@@ -7,17 +7,19 @@ public class User {
 	String hash;
 	Set buddies;
 	
+	public User() {}
+	
 	public User(String username, String hash) {
 		super();
 		this.username = username;
 		this.hash = hash;
 	}
 	
-	public User(String username, String hash, Set buddys) {
+	public User(String username, String hash, Set buddies) {
 		super();
 		this.username = username;
 		this.hash = hash;
-		this.buddies = buddys;
+		this.buddies = buddies;
 	}
 	public String getUsername() {
 		return username;
@@ -31,11 +33,11 @@ public class User {
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-	public Set getBuddys() {
+	public Set getBuddies() {
 		return buddies;
 	}
-	public void setBuddys(Set buddys) {
-		this.buddies = buddys;
+	public void setBuddies(Set buddies) {
+		this.buddies = buddies;
 	}
 	
 }

@@ -8,13 +8,54 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 import org.hibernate.*;
+import org.hibernate.cfg.Configuration;
 
 public class DataAbstractionObject
 {
+	private static SessionFactory factory;
 	private Connection connection;
+	
+	public static void main(String[] args)
+	{
+		DataAbstractionObject dao = new DataAbstractionObject();
+		
+		dao.stuffs();
+	}
+	
+	private void stuffs()
+	{
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try
+		{
+			User u = (User) session.get(User.class, "albert");
+			System.out.println(u.hash);
+		}
+		catch (HibernateException e)
+		{
+			if (tx!=null)
+				tx.rollback();
+			e.printStackTrace();
+		}
+		finally
+		{
+			session.close();
+		}
+	}
 	
 	public DataAbstractionObject()
 	{
+		//hibernate stuff
+		try
+		{
+			factory = new Configuration().configure().buildSessionFactory();
+		}
+		catch (Throwable ex)
+		{
+			System.err.println("Failed to create sessionFactory object." + ex);
+			throw new ExceptionInInitializerError(ex);
+		}
+
 		// database connection stuff
 		try
 		{

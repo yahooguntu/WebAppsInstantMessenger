@@ -3,7 +3,7 @@
 "-//Hibernate/Hibernate Mapping DTD//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="User" table="burst_ppl_User">
+	<class name="data.User" table="burst_ppl_User">
 		<meta attribute="class-description">
 			This class contains the user detail.
 		</meta>
@@ -12,11 +12,11 @@
 		</id>
 		<set name="buddies" cascade="all">
 			<key column="username" />
-			<one-to-many class="Buddy" />
+			<one-to-many class="data.Buddy" />
 		</set>
 		<property name="hash" column="hash" type="string" />
 	</class>
-	<class name="Buddy" table="burst_ppl_Buddy">
+	<class name="data.Buddy" table="burst_ppl_Buddy">
 		<meta attribute="class-description">
 			This class contains the buddy records.
 		</meta>

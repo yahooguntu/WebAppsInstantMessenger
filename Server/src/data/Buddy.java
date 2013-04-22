@@ -4,6 +4,7 @@ public class Buddy
 {
 	String username;
 	String buddyname;
+	
 	public Buddy() {}
 	
 	public Buddy(String username, String buddyname) {
