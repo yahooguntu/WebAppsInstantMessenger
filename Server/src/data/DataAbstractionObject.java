@@ -7,10 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
+import org.hibernate.*;
 
-/*
- * Last commit before Hibernate takes over.
- */
 public class DataAbstractionObject
 {
 	private Connection connection;
