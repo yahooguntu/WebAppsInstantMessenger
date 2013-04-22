@@ -10,21 +10,21 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-import data.DataAbstractionObject;
+import data.DataAccess;
 
 public class ThreadedIMServer
 extends BasicServer implements Runnable
 {
 	private BlockingQueue<Event> dispatchQueue;
 	public ConcurrentHashMap<String, PrintWriter> printWriters;
-	private DataAbstractionObject dao;
+	private DataAccess dao;
 	
 	public ThreadedIMServer()
 	{
 		super(4225, 0);
 		dispatchQueue = new ArrayBlockingQueue<Event>(20);
 		printWriters = new ConcurrentHashMap<String, PrintWriter>();
-		dao = new DataAbstractionObject();
+		dao = new DataAccess();
 		
 		// fire up the dispatcher
 		DispatcherThread dispatcher = new DispatcherThread(dispatchQueue, printWriters, dao);

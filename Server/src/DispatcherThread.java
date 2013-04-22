@@ -3,16 +3,16 @@ import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-import data.DataAbstractionObject;
+import data.DataAccess;
 
 
 public class DispatcherThread extends Thread
 {
 	private BlockingQueue<Event> queue;
 	private ConcurrentHashMap<String, PrintWriter> printWriters;
-	private DataAbstractionObject dao;
+	private DataAccess dao;
 
-	public DispatcherThread(BlockingQueue<Event> queue, ConcurrentHashMap<String, PrintWriter> printWriters, DataAbstractionObject dao)
+	public DispatcherThread(BlockingQueue<Event> queue, ConcurrentHashMap<String, PrintWriter> printWriters, DataAccess dao)
 	{
 		super();
 		this.queue = queue;

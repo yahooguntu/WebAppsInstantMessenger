@@ -10,14 +10,14 @@ import java.util.UUID;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
-public class DataAbstractionObject
+public class DataAccess
 {
 	private static SessionFactory factory;
 	private Connection connection;
 	
 	public static void main(String[] args)
 	{
-		DataAbstractionObject dao = new DataAbstractionObject();
+		DataAccess dao = new DataAccess();
 		
 		dao.stuffs();
 	}
@@ -43,7 +43,7 @@ public class DataAbstractionObject
 		}
 	}
 	
-	public DataAbstractionObject()
+	public DataAccess()
 	{
 		//hibernate stuff
 		try
