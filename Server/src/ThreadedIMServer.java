@@ -66,8 +66,8 @@ extends BasicServer implements Runnable
 			PrintWriter oldLogin = printWriters.remove(user);
 			oldLogin.write("7 " + user + "\n");
 			oldLogin.flush();
+			printWriters.put(user, output);
 		}
-		printWriters.put(user, output);
 		return dao.checkPassword(user, password);
 	}
 	

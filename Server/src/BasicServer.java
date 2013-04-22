@@ -34,7 +34,7 @@ public class BasicServer
 				if ( (maxConnections == 0) || (numConnections <= maxConnections) )
 				{
 					newConnect = listenSocket.accept();
-					System.out.println("Accepted " + newConnect.getInetAddress().toString().substring(1) + "\n: ");
+					System.out.println("Accepted " + newConnect.getInetAddress().toString().substring(1));
 					System.out.flush();
 					numConnections++;
 					serviceConnection(newConnect);

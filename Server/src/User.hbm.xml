@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="User" table="burst_ppl_User">
+		<meta attribute="class-description">
+			This class contains the user detail.
+		</meta>
+		<id name="username" type="string" column="username">
+			<!-- <generator class="native" /> -->
+		</id>
+		<set name="buddies" cascade="all">
+			<key column="username" />
+			<one-to-many class="Buddy" />
+		</set>
+		<property name="hash" column="hash" type="string" />
+	</class>
+	<class name="Buddy" table="burst_ppl_Buddy">
+		<meta attribute="class-description">
+			This class contains the buddy records.
+		</meta>
+		<id name="username" type="string" column="username">
+			<!-- <generator class="native" /> -->
+		</id>
+		<property name="buddyname" column="buddyname" type="string" />
+	</class>
+</hibernate-mapping>

@@ -43,7 +43,7 @@ public class ServerConnectionThread extends Thread
 					break;
 				}
 				
-				input = input.toLowerCase();
+				System.out.println("Message received: " + input);
 
 				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
 				String msgBody = input.substring(input.indexOf(" ") + 1);
