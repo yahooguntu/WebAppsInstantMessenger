@@ -75,33 +75,9 @@ public class DataAccess
 		}
 	}
 	
-	public synchronized ArrayList<String> getBuddies(String user)
+	public synchronized List<String> getBuddies(String user)
 	{
-		ArrayList<String> buddies = new ArrayList(10);
 		
-		try
-		{
-			//get the hash from the db and protect against sql injection
-			ResultSet result;
-			result = connection.createStatement().executeQuery("SELECT `buddyname` FROM `burst_ppl_Buddy` WHERE `username` = '" + java.net.URLEncoder.encode(user, "ASCII") + "'");
-			
-			while (result.next())
-			{
-				buddies.add(result.getString("buddyname"));
-			}
-		}
-		catch (SQLException e)
-		{
-			return buddies;
-		}
-		catch (Exception e)
-		{
-			System.err.println("Something went horribly wrong!");
-			e.printStackTrace();
-			System.exit(3);
-		}
-		
-		return buddies;
 	}
 	
 	public synchronized ArrayList<String> getFollowers(String user)
