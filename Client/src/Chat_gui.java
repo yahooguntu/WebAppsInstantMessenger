@@ -122,18 +122,22 @@ public class Chat_gui extends javax.swing.JFrame {
 
     private void Enter_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Enter_sendActionPerformed
         // TODO add your handling code here:
+    	
     }//GEN-LAST:event_Enter_sendActionPerformed
 
     private void Enter_sendStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_Enter_sendStateChanged
         // TODO add your handling code here:
+    	
     }//GEN-LAST:event_Enter_sendStateChanged
 
     private void SendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SendMouseClicked
         // TODO add your handling code here:
+    	
     }//GEN-LAST:event_SendMouseClicked
 
     private void MessageKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MessageKeyTyped
         // TODO add your handling code here:
+    	
     }//GEN-LAST:event_MessageKeyTyped
 
     /**

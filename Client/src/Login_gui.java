@@ -1,3 +1,9 @@
+import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -8,7 +14,7 @@
  *
  * @author Seth Yost
  */
-public class Login_gui extends javax.swing.JDialog {
+public class Login_gui extends javax.swing.JDialog implements Runnable{
 
     /**
      * Creates new form Login_gui
@@ -106,10 +112,35 @@ public class Login_gui extends javax.swing.JDialog {
 
     private void Login_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Login_ButtonActionPerformed
         // TODO add your handling code here:
+    	
     }//GEN-LAST:event_Login_ButtonActionPerformed
 
     private void Login_ButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Login_ButtonMouseClicked
         // TODO add your handling code here:
+    	String hostname = "localhost";
+    	int portNum = 4225;
+    	Socket connection;
+    	BufferedReader reader;
+    	
+    	try
+    	{
+	    	String user = Username.getText();
+	    	String password = Password.getPassword().toString();    	
+	    	String message = "1 " + user + " " + password;
+	    	CLIClient temp = new CLIClient();
+	    	temp.sendMessage(message);
+	    	connection = new Socket(hostname, portNum);
+	    	reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    	
+	    	Thread readerThread = new Thread();
+			readerThread.start();
+	    	
+    	}
+    	catch(Exception e)
+    	{
+    		System.err.print(e);
+    	}
+    	
     }//GEN-LAST:event_Login_ButtonMouseClicked
 
     /**
@@ -152,7 +183,44 @@ public class Login_gui extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
+        
     }
+    public void run()
+	{
+		BufferedReader in = null;
+		
+		try
+		{
+			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			
+			String input = in.readLine();
+			while (true)
+			{
+				if (input == null)
+					break;
+				
+				System.out.println("Message received: " + input);
+				
+				input = in.readLine();
+				if(input.substring(0, 1).compareTo("6") == 0)
+				{
+					//Buddy_gui buddy = new Buddy_gui();
+				}
+				else if(input.substring(0, 1).compareTo("7") == 0)
+				{
+					jLabel1.setText("Login Failed. Invaild username and password. Try Again."); 
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception thrown!");
+			e.printStackTrace();
+		}
+		
+		System.out.println("Thread suicide: reader thread");
+	}
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Login_Button;
     private javax.swing.JPasswordField Password;
