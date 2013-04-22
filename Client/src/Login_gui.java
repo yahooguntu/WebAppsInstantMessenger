@@ -15,7 +15,12 @@ import java.util.Scanner;
  * @author Seth Yost
  */
 public class Login_gui extends javax.swing.JDialog implements Runnable{
-
+	private String hostname = "localhost";
+	private int portNum = 4225;
+	private Socket connection;
+	private BufferedReader reader;
+	private PrintWriter writer;
+	
     /**
      * Creates new form Login_gui
      */
@@ -117,10 +122,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
 
     private void Login_ButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Login_ButtonMouseClicked
         // TODO add your handling code here:
-    	String hostname = "localhost";
-    	int portNum = 4225;
-    	Socket connection;
-    	BufferedReader reader;
+    	
     	
     	try
     	{
@@ -128,11 +130,11 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
 	    	String password = Password.getPassword().toString();    	
 	    	String message = "1 " + user + " " + password;
 	    	CLIClient temp = new CLIClient();
-	    	temp.sendMessage(message);
 	    	connection = new Socket(hostname, portNum);
 	    	reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    	writer = new PrintWriter(connection.getOutputStream());
 	    	
-	    	Thread readerThread = new Thread();
+	    	Thread readerThread = new Thread(this);
 			readerThread.start();
 	    	
     	}
@@ -187,13 +189,9 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
     }
     public void run()
 	{
-		BufferedReader in = null;
-		
-		try
-		{
-			in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			
-			String input = in.readLine();
+    	try
+    	{
+			String input = reader.readLine();
 			while (true)
 			{
 				if (input == null)
@@ -201,7 +199,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
 				
 				System.out.println("Message received: " + input);
 				
-				input = in.readLine();
+				input = reader.readLine();
 				if(input.substring(0, 1).compareTo("6") == 0)
 				{
 					//Buddy_gui buddy = new Buddy_gui();

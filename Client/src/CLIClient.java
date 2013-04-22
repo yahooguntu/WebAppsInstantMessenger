@@ -82,9 +82,4 @@ public class CLIClient implements Runnable
 		
 		System.out.println("Thread suicide: reader thread");
 	}
-	
-	public void sendMessage(String msg)
-	{
-		writer.write(msg + "\n");
-	}
 }
