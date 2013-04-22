@@ -4,6 +4,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import javax.swing.JDialog;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -17,7 +19,7 @@ import java.util.Scanner;
 public class Login_gui extends javax.swing.JDialog implements Runnable{
 	private String hostname = "localhost";
 	private int portNum = 4225;
-	private Socket connection;
+	private Socket connection = null;
 	private BufferedReader reader;
 	private PrintWriter writer;
 	
@@ -123,19 +125,57 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
     private void Login_ButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Login_ButtonMouseClicked
         // TODO add your handling code here:
     	
-    	
+    	System.out.println("logging in");
     	try
     	{
 	    	String user = Username.getText();
-	    	String password = Password.getPassword().toString();    	
-	    	String message = "1 " + user + " " + password;
-	    	CLIClient temp = new CLIClient();
-	    	connection = new Socket(hostname, portNum);
-	    	reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-	    	writer = new PrintWriter(connection.getOutputStream());
+	    	String password = new String(Password.getPassword());    	
+	    	String message = "1 " + user + " " + password + "\n";
+	    	if (connection == null)
+	    	{
+	    		connection = new Socket(hostname, portNum);
+	    		reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    		writer = new PrintWriter(connection.getOutputStream());
+	    	}
+	    	writer.write(message);
+	    	writer.flush();
 	    	
-	    	Thread readerThread = new Thread(this);
-			readerThread.start();
+	    	boolean success = false;
+	    	String input = reader.readLine();
+			while (true)
+			{
+				if (input == null)
+					break;
+				
+				System.out.println("Message received: " + input);
+				
+				if(input.substring(0, 1).compareTo("6") == 0)
+				{
+					success = true;
+					break;
+				}
+				else if(input.substring(0, 1).compareTo("7") == 0)
+				{
+					jLabel1.setText("Login Failed.");
+					Password.setText("");
+					break;
+				}
+				
+				input = reader.readLine();
+			}
+	    	
+			if (success)
+			{
+				System.out.println("Login succeeded.");
+				//Buddy_gui buddy = new Buddy_gui();
+			}
+			else
+			{
+				System.out.println("Login failed.");
+			}
+			
+//	    	Thread readerThread = new Thread(this);
+//			readerThread.start();
 	    	
     	}
     	catch(Exception e)
@@ -187,6 +227,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
         });
         
     }
+    
     public void run()
 	{
     	try
