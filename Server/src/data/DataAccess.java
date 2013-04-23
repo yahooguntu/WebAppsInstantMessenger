@@ -20,6 +20,7 @@ public class DataAccess
 	
 	private void demo()
 	{
+		// gets a list from getEverything() and prints it out
 		List list = getEverything();
 		for (Object o : list)
 		{
@@ -33,10 +34,11 @@ public class DataAccess
 		Transaction tx = null;
 		try
 		{
+			// this is how a transaction is started, though this example doesn't need them
 			tx = session.beginTransaction();
 			
-			//this is NOT SQL
-			//its HQL
+			// this is HQL
+			// "SELECT *" isn't necessary
 			List buddies = session.createQuery("FROM java.lang.Object").list();
 			
 			tx.commit();
