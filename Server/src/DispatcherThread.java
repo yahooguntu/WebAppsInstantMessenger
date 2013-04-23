@@ -1,10 +1,10 @@
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-
+import data.Buddy;
 import data.DataAccess;
-
 
 public class DispatcherThread extends Thread
 {
@@ -141,11 +141,11 @@ public class DispatcherThread extends Thread
 
 	}
 	
-	private void sendMessage(String user, String msg, ArrayList<String> recipients)
+	private void sendMessage(String user, String msg, List<Buddy> recipients)
 	{
-		for (String b : recipients)
+		for (Buddy b : recipients)
 		{
-			PrintWriter w = printWriters.get(b);
+			PrintWriter w = printWriters.get(b.getUsername());
 			if (w != null)
 			{
 				w.write(msg);
@@ -156,7 +156,7 @@ public class DispatcherThread extends Thread
 	
 	private void sendInitialBuddies(String user)
 	{
-		ArrayList<String> buddies = dao.getBuddies(user);
+		List<Buddy> buddies = dao.getBuddies(user);
 		PrintWriter userStream = printWriters.get(user);
 		
 		if (userStream == null)
@@ -165,10 +165,10 @@ public class DispatcherThread extends Thread
 			return;
 		}
 		
-		for (String b : buddies)
+		for (Buddy b : buddies)
 		{
-			if (printWriters.containsKey(b))
-				userStream.write("4 " + b + "\n");
+			if (printWriters.containsKey(b.getBuddyname()))
+				userStream.write("4 " + b.getBuddyname() + "\n");
 			userStream.flush();
 		}
 	}

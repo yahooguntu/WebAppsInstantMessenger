@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
@@ -19,28 +20,42 @@ public class DataAccess
 	{
 		DataAccess dao = new DataAccess();
 		
-		dao.stuffs();
+		dao.test();
 	}
 	
-	private void stuffs()
+	private void demo()
+	{
+		List list = getEverything();
+		for (Object o : list)
+		{
+			System.out.println(o.toString());
+		}
+	}
+	
+	public synchronized List getEverything()
 	{
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try
 		{
-			User u = (User) session.get(User.class, "albert");
-			System.out.println(u.hash);
+			tx = session.beginTransaction();
+			
+			//this is NOT SQL
+			//its HQL
+			List buddies = session.createQuery("FROM java.lang.Object").list();
+			
+			tx.commit();
+			return buddies;
 		}
 		catch (HibernateException e)
 		{
-			if (tx!=null)
-				tx.rollback();
 			e.printStackTrace();
-		}
-		finally
-		{
+			if (tx != null)
+				tx.rollback();
+		} finally {
 			session.close();
 		}
+		return null;
 	}
 	
 	public DataAccess()
@@ -75,75 +90,88 @@ public class DataAccess
 		}
 	}
 	
-	public synchronized List<String> getBuddies(String user)
+	/* BOILERPLATE CODE
+	Session session = factory.openSession();
+	//Transaction tx = null;
+	try
 	{
+		//tx = session.beginTransaction();
 		
 	}
-	
-	public synchronized ArrayList<String> getFollowers(String user)
+	catch (HibernateException e)
 	{
-		ArrayList<String> buddies = new ArrayList(10);
-		
+		e.printStackTrace();
+	} finally {
+		session.close();
+	}
+	*/
+	
+	private void test()
+	{
+		List list = getBuddies("joe");
+		for (Object o : list)
+		{
+			System.out.println(o.toString());
+		}
+	}
+	
+	public synchronized List<Buddy> getBuddies(String user)
+	{
+		Session session = factory.openSession();
 		try
 		{
-			//get the hash from the db and protect against sql injection
-			ResultSet result;
-			result = connection.createStatement().executeQuery("SELECT `username` FROM `burst_ppl_Buddy` WHERE `buddyname` = '" + java.net.URLEncoder.encode(user, "ASCII") + "'");
+			List<Buddy> buddies = session.createQuery("FROM data.Buddy AS b WHERE b.username = '" + user + "'").list();
 			
-			while (result.next())
-			{
-				buddies.add(result.getString("username"));
-			}
-		}
-		catch (SQLException e)
-		{
 			return buddies;
 		}
-		catch (Exception e)
+		catch (HibernateException e)
 		{
-			System.err.println("Something went horribly wrong!");
 			e.printStackTrace();
-			System.exit(3);
+		} finally {
+			session.close();
 		}
-		
-		return buddies;
+		return null;
 	}
 	
-	/*
-	 * Works!
-	 */
-	public synchronized boolean checkPassword(String user, String password)
+	public synchronized List<Buddy> getFollowers(String user)
 	{
+		Session session = factory.openSession();
 		try
 		{
-			//get the hash from the db and protect against sql injection
-			ResultSet result;
-			result = connection.createStatement().executeQuery("SELECT * FROM `burst_ppl_User` WHERE `username` = '" + java.net.URLEncoder.encode(user, "ASCII") + "'");
+			List<Buddy> buddies = session.createQuery("FROM data.Buddy AS b WHERE b.buddyname = '" + user + "'").list();
 			
-			result.next();
-			String dbHash = result.getString("hash");
-			String hash = hash(password, dbHash.substring(0, 64), 100000);
-			
-			if (dbHash.equals(hash))
-				return true;
+			return buddies;
 		}
-		catch (SQLException e)
+		catch (HibernateException e)
 		{
-			return false;
+			e.printStackTrace();
+		} finally {
+			session.close();
 		}
-		catch (Exception e)
+		return null;
+	}
+	
+	public synchronized User getUser(String user)
+	{
+		Session session = factory.openSession();
+		try
+		{
+			User u = (User) session.get(User.class, user);
+			
+			return u;
+		}
+		catch (HibernateException e)
 		{
 			System.err.println("Something went horribly wrong!");
 			e.printStackTrace();
 			System.exit(3);
+		} finally {
+			session.close();
 		}
 		
-		return false;
+		return null;
 	}
 	
-	/*
-	 * Works!
-	 */
 	public synchronized boolean addUser(String username, String password)
 	{
 		System.out.println("DAO: adding user " + username + "\n: ");
@@ -218,7 +246,7 @@ public class DataAccess
 		return false;
 	}
 
-	private static String hash(String password, String salt, int iterations)
+	public static String hash(String password, String salt, int iterations)
 	{
 		password = salt + password;
 		
@@ -232,6 +260,8 @@ public class DataAccess
 	
     /**
      * Copied from StackExchange.
+     * To hash:
+     * 	String hash = hash(password, dbHash.substring(0, 64), 100000);
      */
     private static String hash(String password)
     {

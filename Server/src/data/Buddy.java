@@ -1,7 +1,10 @@
 package data;
 
-public class Buddy
+import java.io.Serializable;
+
+public class Buddy implements Serializable
 {
+	private static final long serialVersionUID = -4008193531871734186L;
 	String username;
 	String buddyname;
 	
@@ -24,5 +27,11 @@ public class Buddy
 	}
 	public void setBuddyname(String buddyname) {
 		this.buddyname = buddyname;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "[Buddy:username='" + username + "',buddyname='" + buddyname + "']";
 	}
 }

@@ -7,9 +7,8 @@
 		<meta attribute="class-description">
 			This class contains the user detail.
 		</meta>
-		<id name="username" type="string" column="username">
+		<id name="username" type="string" column="username" />
 			<!-- <generator class="native" /> -->
-		</id>
 		<set name="buddies" cascade="all">
 			<key column="username" />
 			<one-to-many class="data.Buddy" />
@@ -20,9 +19,10 @@
 		<meta attribute="class-description">
 			This class contains the buddy records.
 		</meta>
-		<id name="username" type="string" column="username">
+		<composite-id>
+			<key-property name="username" type="string" column="username" />
+			<key-property name="buddyname" type="string" column="buddyname" />
 			<!-- <generator class="native" /> -->
-		</id>
-		<property name="buddyname" column="buddyname" type="string" />
+		</composite-id>
 	</class>
 </hibernate-mapping>

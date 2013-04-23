@@ -11,6 +11,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import data.DataAccess;
+import data.User;
 
 public class ThreadedIMServer
 extends BasicServer implements Runnable
@@ -68,9 +69,17 @@ extends BasicServer implements Runnable
 			PrintWriter oldLogin = printWriters.remove(user);
 			oldLogin.write("7 " + user + "\n");
 			oldLogin.flush();
-			printWriters.put(user, output);
 		}
-		return dao.checkPassword(user, password);
+		
+		User u = dao.getUser(user);
+		if (u == null)
+			return false;
+		
+		String hash = DataAccess.hash(password, u.getHash().substring(0, 64), 100000);
+		boolean success = (u.getHash().equals(hash));
+		if (success)
+			printWriters.put(u.getUsername(), output);
+		return success;
 	}
 	
 	public void userSignOff(String user)
@@ -97,7 +106,7 @@ extends BasicServer implements Runnable
 		
 		Scanner s = new Scanner(System.in);
 		s.useDelimiter("\n");
-		System.out.print(": ");
+		
 		while (true)
 		{
 			String input = s.next();

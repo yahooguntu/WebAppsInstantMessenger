@@ -40,4 +40,9 @@ public class User {
 		this.buddies = buddies;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return "[User:username='" + username + "',hash12='" + hash.substring(0, 12) + "']";
+	}
 }
