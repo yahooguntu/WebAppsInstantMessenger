@@ -7,9 +7,10 @@
 		<meta attribute="class-description">
 			This class contains the user detail.
 		</meta>
-		<id name="username" type="string" column="username" />
-			<!-- <generator class="native" /> -->
-		<set name="buddies" cascade="all">
+		<id name="username" type="string" column="username">
+			<generator class="assigned" />
+		</id>
+		<set name="buddies" cascade="all" fetch="join">
 			<key column="username" />
 			<one-to-many class="data.Buddy" />
 		</set>
@@ -22,7 +23,7 @@
 		<composite-id>
 			<key-property name="username" type="string" column="username" />
 			<key-property name="buddyname" type="string" column="buddyname" />
-			<!-- <generator class="native" /> -->
+			<generator class="assigned" />
 		</composite-id>
 	</class>
 </hibernate-mapping>

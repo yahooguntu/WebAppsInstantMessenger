@@ -87,9 +87,9 @@ extends BasicServer implements Runnable
 		printWriters.remove(user);
 	}
 	
-	public boolean addUser(String username, String password)
+	public boolean addUser(User u)
 	{
-		return dao.addUser(username, password);
+		return dao.addUser(u);
 	}
 	
 	public boolean isLoggedOn(String user)

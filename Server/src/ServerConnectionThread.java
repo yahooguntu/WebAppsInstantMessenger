@@ -3,6 +3,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import data.DataAccess;
+import data.User;
+
 public class ServerConnectionThread extends Thread
 {
 	private ThreadedIMServer server;
@@ -63,7 +66,8 @@ public class ServerConnectionThread extends Thread
 					int splitLoc = msgBody.indexOf(" ");
 					String msgUsername = msgBody.substring(0, splitLoc);
 					String msgPassword = msgBody.substring(splitLoc + 1);
-					if (!server.addUser(msgUsername, msgPassword))
+					User toAdd = new User(java.net.URLEncoder.encode(msgUsername, "ASCII"), DataAccess.hash(msgPassword, DataAccess.generateSalt(msgUsername), 100000));
+					if (!server.addUser(toAdd))
 					{
 						out.write("7 " + msgUsername + "\n");
 						out.flush();

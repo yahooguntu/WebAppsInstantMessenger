@@ -1,5 +1,6 @@
 package data;
 
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,9 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.collection.PersistentSet;
+import org.hibernate.exception.ConstraintViolationException;
 
 public class DataAccess
 {
@@ -20,7 +24,8 @@ public class DataAccess
 	{
 		DataAccess dao = new DataAccess();
 		
-		dao.test();
+		System.out.println("Getting everything:");
+		dao.demo();
 	}
 	
 	private void demo()
@@ -70,24 +75,6 @@ public class DataAccess
 			System.err.println("Failed to create sessionFactory object." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
-
-		// database connection stuff
-		try
-		{
-			String driverName = "com.mysql.jdbc.Driver";
-			String connectionName = "jdbc:mysql://john.cedarville.edu/cs4220";
-			String dbUsername = "cs4220";
-			String dbPassword = "";
-
-			Class.forName(driverName).newInstance();
-			connection = DriverManager.getConnection(connectionName, dbUsername, dbPassword);
-		}
-		catch (Exception e)
-		{
-			System.err.println("Database initialization exception!");
-			e.printStackTrace();
-			System.exit(2);
-		}
 	}
 	
 	/* BOILERPLATE CODE
@@ -105,15 +92,6 @@ public class DataAccess
 		session.close();
 	}
 	*/
-	
-	private void test()
-	{
-		List list = getBuddies("joe");
-		for (Object o : list)
-		{
-			System.out.println(o.toString());
-		}
-	}
 	
 	public synchronized List<Buddy> getBuddies(String user)
 	{
@@ -157,7 +135,6 @@ public class DataAccess
 		try
 		{
 			User u = (User) session.get(User.class, user);
-			
 			return u;
 		}
 		catch (HibernateException e)
@@ -172,23 +149,27 @@ public class DataAccess
 		return null;
 	}
 	
-	public synchronized boolean addUser(String username, String password)
+	public synchronized boolean addUser(User user)
 	{
-		System.out.println("DAO: adding user " + username + "\n: ");
-		password = hash(password, hash(UUID.randomUUID() + "jf298UF(*&Y872ty97Y*76t239Gy9272" + username), 100000);
-		
+		Session session = factory.openSession();
+		Transaction tx = null;
 		try
 		{
-			//add the user to the database
-			connection.createStatement().executeUpdate("INSERT INTO `burst_ppl_User` VALUES ('" + java.net.URLEncoder.encode(username, "ASCII") + "', '" + password + "')");
+			tx = session.beginTransaction();
 			
+			//add the user to the database
+			session.save(user);
+			
+			tx.commit();
+			System.out.println("DAO: added user " + user.getUsername());
 			return true;
 		}
-		catch (SQLException e)
+		catch (ConstraintViolationException e)
 		{
+			System.out.println("DAO: user " + user.getUsername() + " already exists");
 			return false;
 		}
-		catch (Exception e)
+		catch (HibernateException e)
 		{
 			System.err.println("Something went horribly wrong!");
 			e.printStackTrace();
@@ -200,19 +181,25 @@ public class DataAccess
 	
 	public synchronized boolean addBuddy(String username, String buddy)
 	{
+		Session session = factory.openSession();
+		Transaction tx = null;
 		try
 		{
-			//add the user to the database
-			connection.createStatement().executeUpdate("INSERT INTO `burst_ppl_Buddy` VALUES ('" + java.net.URLEncoder.encode(username, "ASCII") + "', '" + java.net.URLEncoder.encode(buddy, "ASCII") + "')");
+			tx = session.beginTransaction();
 			
-			System.out.println("DAO: " + username + " is now buddies with " + buddy + "\n: ");
+			//get the user
+			User u = (User) session.get(User.class, username);
+			u.getBuddies().add(new Buddy(u.getUsername(), buddy));
+			
+			tx.commit();
+			System.out.println("DAO: " + username + " is now buddies with " + buddy);
 			return true;
 		}
-		catch (SQLException e)
+		catch (NonUniqueObjectException e)
 		{
 			return false;
 		}
-		catch (Exception e)
+		catch (HibernateException e)
 		{
 			System.err.println("Something went horribly wrong!");
 			e.printStackTrace();
@@ -224,16 +211,22 @@ public class DataAccess
 	
 	public synchronized boolean removeBuddy(String username, String buddy)
 	{
+		Session session = factory.openSession();
+		Transaction tx = null;
 		try
 		{
-			//add the user to the database
-			connection.createStatement().executeUpdate("DELETE FROM `burst_ppl_Buddy` WHERE `username` = '" + java.net.URLEncoder.encode(username, "ASCII") + "' AND `buddyname` = '" + java.net.URLEncoder.encode(buddy, "ASCII") + "'");
+			username = java.net.URLEncoder.encode(username, "ASCII");
+			buddy = java.net.URLEncoder.encode(buddy, "ASCII");
+			tx = session.beginTransaction();
 			
+			session.createQuery("DELETE data.Buddy AS b WHERE b.username = '" + username +"' AND b.buddyname = '" + buddy + "'").executeUpdate();
+			
+			tx.commit();
+			System.out.println("DAO: " + username + " is no longer buddies with " + buddy);
 			return true;
 		}
-		catch (SQLException e)
+		catch (NonUniqueObjectException e)
 		{
-			e.printStackTrace();
 			return false;
 		}
 		catch (Exception e)
@@ -256,6 +249,11 @@ public class DataAccess
 		}
 		
 		return salt + password;
+	}
+	
+	public static String generateSalt(String username)
+	{
+		return hash(UUID.randomUUID() + "jf298UF(*&Y872ty97Y*76t239Gy9272" + username);
 	}
 	
     /**
