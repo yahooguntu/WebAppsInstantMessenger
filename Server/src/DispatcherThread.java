@@ -73,10 +73,10 @@ public class DispatcherThread extends Thread
 						System.out.println("Dispatcher thread: " + e.msg1 + " is now buddies with " + e.msg2);
 					else
 						System.out.println("Dispatcher thread: " + e.msg1 + " failed to add buddy: " + e.msg2);
-					destination = printWriters.get(e.msg2);
-					if (destination != null)
+					destination = printWriters.get(e.msg1);
+					if (destination != null && printWriters.containsKey(e.msg2))
 					{
-						destination.write("4 " + e.msg1 + "\n");
+						destination.write("4 " + e.msg2 + "\n");
 						destination.flush();
 					}
 					break;
@@ -85,10 +85,10 @@ public class DispatcherThread extends Thread
 				case 9:
 					if (dao.removeBuddy(e.msg1, e.msg2))
 						System.out.println("Dispatcher thread: " + e.msg1 + " is no longer buddies with " + e.msg2);
-					destination = printWriters.get(e.msg2);
-					if (destination != null)
+					destination = printWriters.get(e.msg1);
+					if (destination != null && printWriters.containsKey(e.msg2))
 					{
-						destination.write("5 " + e.msg1 + "\n");
+						destination.write("5 " + e.msg2 + "\n");
 						destination.flush();
 					}
 					break;
