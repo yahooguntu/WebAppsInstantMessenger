@@ -5,7 +5,7 @@
 <hibernate-mapping>
 	<class name="data.User" table="burst_ppl_User">
 		<meta attribute="class-description">
-			This class contains the user detail.
+			This class contains user details.
 		</meta>
 		<id name="username" type="string" column="username">
 			<generator class="assigned" />
@@ -15,15 +15,5 @@
 			<one-to-many class="data.Buddy" />
 		</set>
 		<property name="hash" column="hash" type="string" />
-	</class>
-	<class name="data.Buddy" table="burst_ppl_Buddy">
-		<meta attribute="class-description">
-			This class contains the buddy records.
-		</meta>
-		<composite-id>
-			<key-property name="username" type="string" column="username" />
-			<key-property name="buddyname" type="string" column="buddyname" />
-			<generator class="assigned" />
-		</composite-id>
 	</class>
 </hibernate-mapping>

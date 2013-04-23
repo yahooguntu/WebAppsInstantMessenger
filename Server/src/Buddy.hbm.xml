@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="data.Buddy" table="burst_ppl_Buddy">
+		<meta attribute="class-description">
+			This class contains buddy relationships.
+		</meta>
+		<composite-id>
+			<key-property name="username" type="string" column="username" />
+			<key-property name="buddyname" type="string" column="buddyname" />
+			<generator class="assigned" />
+		</composite-id>
+	</class>
+</hibernate-mapping>

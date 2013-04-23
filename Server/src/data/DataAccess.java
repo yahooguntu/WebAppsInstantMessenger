@@ -1,30 +1,20 @@
 package data;
 
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.collection.PersistentSet;
 import org.hibernate.exception.ConstraintViolationException;
 
 public class DataAccess
 {
 	private static SessionFactory factory;
-	private Connection connection;
 	
 	public static void main(String[] args)
 	{
 		DataAccess dao = new DataAccess();
 		
-		System.out.println("Getting everything:");
 		dao.demo();
 	}
 	
@@ -135,6 +125,7 @@ public class DataAccess
 		try
 		{
 			User u = (User) session.get(User.class, user);
+			
 			return u;
 		}
 		catch (HibernateException e)
