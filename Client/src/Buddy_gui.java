@@ -1,4 +1,5 @@
-
+import java.awt.Component;
+import java.util.List;
 
 /**
  *
@@ -10,7 +11,9 @@ public class Buddy_gui extends javax.swing.JFrame {
      * Creates new form Buddy_gui
      */
     public Buddy_gui() {
+    	//CLIClient c = new CLIClient();
         initComponents();
+    	
     }
 
     /**
@@ -35,6 +38,9 @@ public class Buddy_gui extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         All_contacts.setModel(new javax.swing.AbstractListModel() {
+        	//TODO:get all online users
+            
+      		//add all users to list      		
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
@@ -44,6 +50,9 @@ public class Buddy_gui extends javax.swing.JFrame {
         jLabel1.setText("All Contacts:");
 
         Buddies.setModel(new javax.swing.AbstractListModel() {
+        	//TODO:get online buddies
+      		
+      		//add buddies to buddy list        	
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
@@ -115,24 +124,56 @@ public class Buddy_gui extends javax.swing.JFrame {
                     .addComponent(GroupChat))
                 .addContainerGap())
         );
+        
+        /*
+    	 * Codes are:
+    	 * 0  - CREATE ACCOUNT		C->S
+    	 * 1  - LOGON				C->S
+    	 * 2  - LOGOFF				C->S
+    	 * 3  - MESSAGE				C<->S
+    	 * 4  - BUDDY ON			S->C
+    	 * 5  - BUDDY OFF			S->C
+    	 * 6  - SUCCESSFUL LOGON	S->C
+    	 * 7  - FAILED LOGON		S->C
+    	 * 8  - ADD BUDDY			C->S
+    	 * 9  - REMOVE BUDDY		C->S
+    	 * 10 - TYPING				C<->S
+    	 * 11 - ENTERED TEXT		C<->S
+    	 * 12 - MESSAGE FAILED		S->C
+    	 * 13 - SET PROFILE			C->S
+    	 * 14 - GET PROFILE 		S->C
+    	 */
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void ChatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChatMouseClicked
         // TODO add your handling code here:
+    	List user = Buddies.getSelectedValuesList();
+    	Chat_gui chat = new Chat_gui(user.toString());
+    	chat.setTitle("Chat");
+    	chat.setVisible(true);
+    	
     }//GEN-LAST:event_ChatMouseClicked
 
     private void AddToBuddiesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddToBuddiesActionPerformed
         // TODO add your handling code here:
+    	
+    	
     }//GEN-LAST:event_AddToBuddiesActionPerformed
 
     private void AddToBuddiesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddToBuddiesMouseClicked
-        // TODO add your handling code here:
+    	
+    	Buddies.add((Component) All_contacts.getSelectedValuesList());    	
+    	//TODO: add to database buddy list
+    	
     }//GEN-LAST:event_AddToBuddiesMouseClicked
 
     private void GroupChatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_GroupChatMouseClicked
         // TODO add your handling code here:
+    	List user = Buddies.getSelectedValuesList();
+    	Chat_gui chat = new Chat_gui(user.toString());
+    	chat.setVisible(true);
     }//GEN-LAST:event_GroupChatMouseClicked
 
     /**

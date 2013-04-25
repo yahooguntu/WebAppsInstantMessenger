@@ -167,7 +167,10 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
 			if (success)
 			{
 				System.out.println("Login succeeded.");
-				//Buddy_gui buddy = new Buddy_gui();
+				Buddy_gui buddy = new Buddy_gui();
+				buddy.setTitle(Username.getText());
+				buddy.setVisible(true);
+				this.setVisible(false);
 			}
 			else
 			{
@@ -243,11 +246,13 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
 				input = reader.readLine();
 				if(input.substring(0, 1).compareTo("6") == 0)
 				{
-					//Buddy_gui buddy = new Buddy_gui();
+					Buddy_gui buddy = new Buddy_gui();
+					buddy.setTitle(Username.getText());
+					buddy.setVisible(true);
 				}
 				else if(input.substring(0, 1).compareTo("7") == 0)
 				{
-					jLabel1.setText("Login Failed. Invaild username and password. Try Again."); 
+					jLabel1.setText("Login Failed."); 
 				}
 			}
 		}

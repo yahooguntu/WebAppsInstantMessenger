@@ -12,8 +12,9 @@ public class Chat_gui extends javax.swing.JFrame {
     /**
      * Creates new form Chat_gui
      */
-    public Chat_gui() {
+    public Chat_gui(String user) {
         initComponents();
+        chat_with_label.setText(user);
     }
 
     /**
@@ -121,22 +122,33 @@ public class Chat_gui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Enter_sendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Enter_sendActionPerformed
-        // TODO add your handling code here:
+        // add your handling code here:
     	
     }//GEN-LAST:event_Enter_sendActionPerformed
 
     private void Enter_sendStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_Enter_sendStateChanged
-        // TODO add your handling code here:
+        
     	
     }//GEN-LAST:event_Enter_sendStateChanged
 
     private void SendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SendMouseClicked
         // TODO add your handling code here:
+    	String mess = Message.getText();
+    	//TODO add mess to conversationPane
     	
     }//GEN-LAST:event_SendMouseClicked
 
     private void MessageKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MessageKeyTyped
-        // TODO add your handling code here:
+        // TODO add your handling code here:  
+    	//if checked send on enter otherwise do nothing.
+    	if(Enter_send.isSelected())
+    	{
+    		char temp = evt.getKeyChar();
+    		if(temp == '\n')
+    		{
+    			//TODO append to conversationPane and send
+    		}    		
+    	}
     	
     }//GEN-LAST:event_MessageKeyTyped
 
@@ -170,7 +182,7 @@ public class Chat_gui extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Chat_gui().setVisible(true);
+                new Chat_gui("Test").setVisible(true);
             }
         });
     }
