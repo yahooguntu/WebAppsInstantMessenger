@@ -40,7 +40,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox();
+       // jComboBox1 = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -48,7 +48,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
         Password = new javax.swing.JPasswordField();
         Login_Button = new javax.swing.JButton();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        //jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
@@ -142,7 +142,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
 	    	
 	    	boolean success = false;
 	    	String input = reader.readLine();
-			while (true)
+			while (!success)
 			{
 				if (input == null)
 					break;
@@ -269,7 +269,7 @@ public class Login_gui extends javax.swing.JDialog implements Runnable{
     private javax.swing.JButton Login_Button;
     private javax.swing.JPasswordField Password;
     private javax.swing.JTextField Username;
-    private javax.swing.JComboBox jComboBox1;
+    //private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -15,8 +15,7 @@ public class CLIClient implements Runnable
 	
 	public static void main(String[] args)
 	{
-		CLIClient c = new CLIClient();		
-		//ChatWindow w = new ChatWindow("me");
+		//CLIClient c = new CLIClient();
 	}
 	
 	public CLIClient()

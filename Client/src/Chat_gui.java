@@ -50,7 +50,7 @@ public class Chat_gui extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(jTree1);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         Message.setColumns(20);
         Message.setRows(5);
