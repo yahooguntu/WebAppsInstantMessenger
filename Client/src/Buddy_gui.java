@@ -13,9 +13,7 @@ public class Buddy_gui extends javax.swing.JFrame {
      * Creates new form Buddy_gui
      */
     public Buddy_gui() {
-    	//CLIClient c = new CLIClient();
         initComponents();
-    	
     }
 
     /**
