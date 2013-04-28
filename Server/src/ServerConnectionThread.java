@@ -200,7 +200,10 @@ public class ServerConnectionThread extends Thread
 			// kill off this thread and close its resources
 			System.out.println("Thread suicide: " + getName());
 			if (user != null)
+			{
 				server.userSignOff(user);
+				server.queueEventDispatch(new Event(2, user));
+			}
 
 			server.onCloseConnection();
 

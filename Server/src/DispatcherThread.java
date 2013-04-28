@@ -1,5 +1,6 @@
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,12 +39,14 @@ public class DispatcherThread extends Thread
 					System.out.println("Dispatcher thread: Logon by " + e.msg1);
 					sendMessage(e.msg1, "4 " + e.msg1 + "\n", dao.getFollowers(e.msg1));
 					sendInitialBuddies(e.msg1);
+					sendToAllBut("15 " + e.msg1 + "\n", e.msg1);
 					break;
 
 					//logoff
 				case 2:
 					System.out.println("Dispatcher thread: Logoff by " + e.msg1);
 					sendMessage(e.msg1, "5 " + e.msg1 + "\n", dao.getFollowers(e.msg1));
+					sendToAllBut("16 " + e.msg1 + "\n", e.msg1);
 					break;
 
 					//message
@@ -170,6 +173,22 @@ public class DispatcherThread extends Thread
 			if (printWriters.containsKey(b.getBuddyname()))
 				userStream.write("4 " + b.getBuddyname() + "\n");
 			userStream.flush();
+		}
+	}
+	
+	private void sendToAllBut(String msg, String user)
+	{
+		PrintWriter[] pwArr = printWriters.values().toArray(new PrintWriter[0]);
+		String[] pwVal = printWriters.keySet().toArray(new String[0]);
+		
+		for (int i = 0; i < pwArr.length; i++)
+		{
+			if (!pwVal[i].equals(user))
+			{
+				PrintWriter w = pwArr[i];
+				w.write(msg);
+				w.flush();
+			}
 		}
 	}
 }
