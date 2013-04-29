@@ -2,6 +2,7 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jws.Oneway;
@@ -20,6 +21,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 	private PrintWriter writer;
 	private ListenerThread listener = null;
 	private BufferedReader reader;
+	private ArrayList<Chat_gui> chatList;
 
 	/**
 	 * Creates new form Buddy_gui
@@ -224,6 +226,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 		Chat_gui chat = new Chat_gui(user);
 		chat.setTitle("Chat");
 		chat.setVisible(true);
+		chatList.add(chat);
 	}
 
 	private void AddToBuddiesActionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,6 +254,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 		String users = user.toString();
 		Chat_gui chat = new Chat_gui(users.substring(1, users.length()-2));
 		chat.setVisible(true);
+		chatList.add(chat);
 	}
 	
 	// Variables declaration - do not modify
