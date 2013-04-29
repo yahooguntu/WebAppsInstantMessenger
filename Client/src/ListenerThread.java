@@ -24,6 +24,7 @@ public class ListenerThread extends Thread
 			while (true)
 			{
 				String input = reader.readLine();
+				System.out.println("Message received: " + input);
 				
 				int msgCode = Integer.parseInt(input.substring(0, input.indexOf(" ")));
 				String msgBody = input.substring(input.indexOf(" ") + 1);
@@ -36,22 +37,26 @@ public class ListenerThread extends Thread
 					SwingUtilities.invokeLater(r);
 				}
 				// buddy offline
-				if (msgCode == 5 && body.length == 1)
+				else if (msgCode == 5 && body.length == 1)
 				{
 					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.removeFromBuddyList(s); } };
 					SwingUtilities.invokeLater(r);
 				}
 				// regular user online
-				if (msgCode == 15 && body.length == 1)
+				else if (msgCode == 15 && body.length == 1)
 				{
 					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.addToOnlineList(s); } };
 					SwingUtilities.invokeLater(r);
 				}
 				// regular user offline
-				if (msgCode == 16 && body.length == 1)
+				else if (msgCode == 16 && body.length == 1)
 				{
 					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.removeFromOnlineList(s); } };
 					SwingUtilities.invokeLater(r);
+				}
+				else
+				{
+					System.out.println("Unsupported message format: " + input);
 				}
 				
 			}
@@ -59,6 +64,11 @@ public class ListenerThread extends Thread
 		catch (IOException e)
 		{
 			System.out.println("IO exception thrown!");
+		}
+		catch (NullPointerException e)
+		{
+			System.out.println("Connection reset!");
+			System.exit(1);
 		}
 		
 		System.out.println("Listener thread died!");

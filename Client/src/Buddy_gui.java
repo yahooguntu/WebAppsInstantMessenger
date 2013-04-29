@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 
+import javax.jws.Oneway;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,6 +18,8 @@ import javax.swing.JScrollPane;
 public class Buddy_gui extends javax.swing.JFrame {
 	private Socket connection;
 	private PrintWriter writer;
+	private ListenerThread listener = null;
+	private BufferedReader reader;
 
 	/**
 	 * Creates new form Buddy_gui
@@ -25,9 +28,16 @@ public class Buddy_gui extends javax.swing.JFrame {
 		initComponents();
 		writer = w;
 		connection = s;
-		
-		ListenerThread listener = new ListenerThread(this, r);
-		listener.start();
+		reader = r;
+	}
+	
+	public void startListener()
+	{
+		if (listener == null)
+		{
+			listener = new ListenerThread(this, reader);
+			listener.start();
+		}
 	}
 
 	/**
@@ -51,8 +61,15 @@ public class Buddy_gui extends javax.swing.JFrame {
 		AddToBuddies = new JButton();
 		GroupChat = new JButton();
 		RemoveBuddy = new JButton();
-
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				writer.write("2 " + getTitle());
+				writer.flush();
+				System.exit(0);
+			}
+		});
 
 		jScrollPane1.setViewportView(AllContacts);
 

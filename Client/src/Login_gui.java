@@ -72,7 +72,7 @@ public class Login_gui extends javax.swing.JDialog {
         
         jLabel4.setText("Address:");
 
-        Address.setText("Localhost:4225");
+        Address.setText("localhost:4225");
         Address.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AddressActionPerformed(evt);
@@ -189,15 +189,13 @@ public class Login_gui extends javax.swing.JDialog {
 				Buddy_gui buddy = new Buddy_gui(connection, reader, writer);
 				buddy.setTitle(Username.getText().toLowerCase());
 				buddy.setVisible(true);
+				buddy.startListener();
 				this.setVisible(false);
 			}
 			else
 			{
 				System.out.println("Login failed.");
 			}
-			
-//	    	Thread readerThread = new Thread(this);
-//			readerThread.start();
 	    	
     	}
     	catch(ConnectException e)
