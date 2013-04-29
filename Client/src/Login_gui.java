@@ -15,8 +15,6 @@ import java.net.Socket;
  * @author Seth Yost
  */
 public class Login_gui extends javax.swing.JDialog {
-	private String hostname = "localhost";
-	private int portNum = 4225;
 	private Socket connection = null;
 	private BufferedReader reader;
 	private PrintWriter writer;
@@ -45,6 +43,8 @@ public class Login_gui extends javax.swing.JDialog {
         Username = new javax.swing.JTextField();
         Password = new javax.swing.JPasswordField();
         Login_Button = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        Address = new javax.swing.JTextField();
 
         //jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -69,6 +69,15 @@ public class Login_gui extends javax.swing.JDialog {
                 Login_ButtonActionPerformed(evt);
             }
         });
+        
+        jLabel4.setText("Address:");
+
+        Address.setText("Localhost:4225");
+        Address.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddressActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -77,40 +86,46 @@ public class Login_gui extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(94, 94, 94)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(101, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(128, 128, 128)
                         .addComponent(Login_Button))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Password, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
-                            .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(29, 29, 29))
+                            .addComponent(Password, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                            .addComponent(Username)
+                            .addComponent(Address, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(Login_Button)
-                .addContainerGap(18, Short.MAX_VALUE))
-        );
+	        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+	        .addGroup(layout.createSequentialGroup()
+	            .addGap(23, 23, 23)
+	            .addComponent(jLabel1)
+	            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+	            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                .addComponent(jLabel4)
+	                .addComponent(Address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                .addComponent(jLabel2)
+	                .addComponent(Username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+	            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+	                .addComponent(jLabel3)
+	                .addComponent(Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+	            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+	            .addComponent(Login_Button)
+	            .addContainerGap())
+	    );
 
         pack();
     }// </editor-fold>
@@ -123,16 +138,21 @@ public class Login_gui extends javax.swing.JDialog {
     	doLogon();
     }
     
+    private void AddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddressActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AddressActionPerformed
+    
     private void doLogon() {
     	System.out.println("logging in");
     	try
     	{
 	    	String user = Username.getText();
-	    	String password = new String(Password.getPassword());    	
+	    	String password = new String(Password.getPassword());
+	    	String[] url = Address.getText().split(":");
 	    	String message = "1 " + user + " " + password + "\n";
 	    	if (connection == null)
 	    	{
-	    		connection = new Socket(hostname, portNum);
+	    		connection = new Socket(url[0], Integer.parseInt(url[1]));
 	    		reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 	    		writer = new PrintWriter(connection.getOutputStream());
 	    	}
@@ -236,6 +256,7 @@ public class Login_gui extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify
+    private javax.swing.JTextField Address;
     private javax.swing.JButton Login_Button;
     private javax.swing.JPasswordField Password;
     private javax.swing.JTextField Username;
@@ -243,5 +264,6 @@ public class Login_gui extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     // End of variables declaration
 }
