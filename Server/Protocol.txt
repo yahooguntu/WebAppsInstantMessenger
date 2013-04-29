@@ -1,0 +1,116 @@
+Matt and Eric Joint Messenger Interoperability Group (MEJMIG)
+
+MEJMIG Officers:
+ Matt Zimmerman  - El Presidente of Taco Bell
+ Eric Simonaire  - VP of Champions
+
+
+Description:
+There are two sections of the protocol.  
+
+In order for your IM server and client to be Cedar-TALK compliant, you MUST conform to the required codes 
+section.
+
+Following, there is an optional section.  You may choose to implement and/or ignore any of those messages
+at your discretion.  You are also encouraged to extend the current functionality of this protocol
+while publicly sharing your extended codes to insure maximum compatibility with other Cedar-TALK 
+applications.
+
+
+
+MESSAGE CODES AND FORMATS (ALL MESSAGES MUST BE TERMINATED WITH A NEWLINE)
+*******************************************
+
+**** REQUIRED CODES FOR Cedar-Talk COMPLIANCE ****
+
+0  - CREATE ACCOUNT
+From client to server
+Format:  0 USERNAME PASSWORD
+Example: 0 mzimmerm qaz123
+
+
+1  - LOGON 
+From client to server
+Format:  1 USERNAME PASSWORD
+Example: 1 mzimmerm qaz123
+
+
+2  - LOGOFF 
+From client to server
+Format:  2 USERNAME
+Example: 2 mzimmerm
+
+
+3  - OUTGOING/INCOMING MESSAGES
+From client to server and server to client
+Format:  3 SENDER RECIPIENT MESSAGE
+Example: 3 mzimmerm esimon This is a sample message!
+
+
+4  - BUDDY ON NOTIFY
+From server to client
+Format:  4 BUDDYNAME
+Example: 4 esimon
+
+
+5  - BUDDY OFF NOTIFY
+From server to client
+Format:  5 BUDDYNAME
+Example: 5 esimon
+
+
+6  - USER LOGGED ON SUCCESSFULLY
+From server to client
+Format:  6 USERNAME
+Example: 6 mzimmerm
+
+
+7  - USER LOGON FAILED
+From server to client
+Format:  7 USERNAME
+Example: 7 mzimmerm
+
+
+
+**** OPTIONAL CODES ****
+
+8  - ADD BUDDY 
+From client to server
+Format:  8 USER BUDDY
+Example: 8 mzimmerm jferrin
+
+
+9  - REMOVE BUDDY
+From client to server
+Format:  9 USER BUDDY
+Example: 9 mzimmerm ssylvy
+
+
+10  - TYPING
+From client to server and server to client
+Format:  10 SENDER RECIPIENT
+Example: 10 mzimmerm esimon
+
+
+11  - ENTERED TEXT
+From client to server and server to client
+Format:  11 SENDER RECIPIENT
+Example: 11 mzimmerm esimon
+
+
+12 - MESSAGE FAILED
+From server to client
+Format:  12 SENDER RECIPIENT MESSAGE
+Example: 12 mzimmerm esimon 1 beef baja gordita
+
+
+13 - SET PROFILE
+From client to server
+Format:  13 USERNAME PASSWORD NEWPROFILETEXT
+Example: 13 mzimmerm esimon <b>This is a cool profile!</b>
+
+
+14 - GET PROFILE
+From server to client
+Format:  14 USERNAME
+Example: 14 esimon

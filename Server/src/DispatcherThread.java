@@ -97,6 +97,7 @@ public class DispatcherThread extends Thread
 					if (destination != null && printWriters.containsKey(e.msg2))
 					{
 						destination.write("5 " + e.msg2 + "\n");
+						destination.write("15 " + e.msg2 + "\n");
 						destination.flush();
 					}
 					break;
