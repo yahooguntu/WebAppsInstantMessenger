@@ -195,12 +195,11 @@ public class Chat_gui extends javax.swing.JFrame {
     	
     }
     
-    protected void message(String mess)
+    protected void message(String From, String mess)
     {
-    	String[] message = mess.split(" ");
     	Calendar cal = Calendar.getInstance();
 		String scal = cal.getTime().toLocaleString();
-    	mess = message[2] + "@ " + scal + ": " + mess;
+    	mess = From + "@ " + scal + ": " + mess;
     	try
     	{
     		doc.insertString(doc.getLength(), mess, null);

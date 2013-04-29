@@ -21,7 +21,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 	private PrintWriter writer;
 	private ListenerThread listener = null;
 	private BufferedReader reader;
-	protected ArrayList<Chat_gui> chatList;
+	private ArrayList<Chat_gui> chatList;
 
 	/**
 	 * Creates new form Buddy_gui
@@ -154,26 +154,6 @@ public class Buddy_gui extends javax.swing.JFrame {
 					.addComponent(GroupChat))
 				.addContainerGap())
 		);
-		
-		/*
-		 * Codes are:
-		 * 0  - CREATE ACCOUNT		C->S
-		 * 1  - LOGON				C->S
-		 * 2  - LOGOFF				C->S
-		 * 3  - MESSAGE				C<->S
-		 * 4  - BUDDY ON			S->C
-		 * 5  - BUDDY OFF			S->C
-		 * 6  - SUCCESSFUL LOGON	S->C
-		 * 7  - FAILED LOGON		S->C
-		 * 8  - ADD BUDDY			C->S
-		 * 9  - REMOVE BUDDY		C->S
-		 * 10 - TYPING				C<->S
-		 * 11 - ENTERED TEXT		C<->S
-		 * 12 - MESSAGE FAILED		S->C
-		 * 13 - SET PROFILE			C->S
-		 * 14 - GET PROFILE 		S->C
-		 */
-
 		pack();
 	}// </editor-fold>
 	
@@ -250,9 +230,9 @@ public class Buddy_gui extends javax.swing.JFrame {
 
 	@SuppressWarnings("rawtypes")
 	private void GroupChatMouseClicked(java.awt.event.MouseEvent evt) {
-		List<String> user = Buddies.getSelectedValuesList();
-		String users = user.toString();
-		Chat_gui chat = new Chat_gui(users.substring(1, users.length()-2), this);
+		String user = Buddies.getSelectedValue().toString();
+		Chat_gui chat = new Chat_gui(user, this);
+		chat.setTitle(user);
 		chat.setVisible(true);
 		chatList.add(chat);
 	}
@@ -264,7 +244,37 @@ public class Buddy_gui extends javax.swing.JFrame {
 	
 	protected void pass(String mess)
 	{
-		//get the proper gui and pass the message to it.
+		String[] message = mess.split(" ");
+		boolean found = false;
+		for(int i = 0; i < chatList.size(); i++)
+		{
+			String[] title;
+		
+			if(chatList.get(i).getTitle().contains(","))
+			{
+				title = chatList.get(i).getTitle().split(",");
+			}
+			else
+			{
+				title = new String[] {chatList.get(1).getTitle()};
+			}
+			for(int j = 0; j < title.length-1; j++)
+			{
+				if(title[j].equals(message[0]))
+				{
+					//TODO make threadSafe
+					chatList.get(i).message(message[0], message[2]);
+					found = true;
+					break;
+				}
+			}
+		}
+		if(!found)
+		{
+			Chat_gui chat = new Chat_gui(message[0], this);
+			chat.setVisible(true);
+			chatList.add(chat);
+		}
 	}
 	
 	// Variables declaration - do not modify

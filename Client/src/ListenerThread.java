@@ -57,17 +57,8 @@ public class ListenerThread extends Thread
 				}
 				else if(msgCode == 3)
 				{
-					ArrayList<Chat_gui> temp = gui.chatList;
-					String[] message = body[1].split(" ");
-					for(int i = 0; i < temp.size(); i++)
-					{
-						if(temp.get(i).getTitle().contains(message[0]))
-						{
-							//TODO make threadSafe
-							temp.get(i).message(body[1]);
-							break;
-						}
-					}
+					Runnable r = new ParameterizedRunnable(msgBody) { public void run() { gui.pass(s); } };
+					SwingUtilities.invokeLater(r);					
 				}
 				else
 				{
