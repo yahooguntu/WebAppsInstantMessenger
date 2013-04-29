@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.hibernate.event.def.OnLockVisitor;
+
 import data.Buddy;
 import data.DataAccess;
 
@@ -12,6 +15,7 @@ public class DispatcherThread extends Thread
 	private BlockingQueue<Event> queue;
 	private ConcurrentHashMap<String, PrintWriter> printWriters;
 	private DataAccess dao;
+	private ArrayList<String> usersOnline;
 
 	public DispatcherThread(BlockingQueue<Event> queue, ConcurrentHashMap<String, PrintWriter> printWriters, DataAccess dao)
 	{
@@ -19,6 +23,7 @@ public class DispatcherThread extends Thread
 		this.queue = queue;
 		this.printWriters = printWriters;
 		this.dao = dao;
+		usersOnline = new ArrayList<String>();
 	}
 
 	public void run()
@@ -37,16 +42,16 @@ public class DispatcherThread extends Thread
 					//logon
 				case 1:
 					System.out.println("Dispatcher thread: Logon by " + e.msg1);
-					sendMessage(e.msg1, "4 " + e.msg1 + "\n", dao.getFollowers(e.msg1));
-					sendInitialBuddies(e.msg1);
-					sendToAllBut("15 " + e.msg1 + "\n", e.msg1);
+					usersOnline.add(e.msg1);
+					sendBuddyList(e.msg1);
+					sendToAll(e.msg1, "4 " + e.msg1 + "\n", "15 " + e.msg1 + "\n");
 					break;
 
 					//logoff
 				case 2:
 					System.out.println("Dispatcher thread: Logoff by " + e.msg1);
-					sendMessage(e.msg1, "5 " + e.msg1 + "\n", dao.getFollowers(e.msg1));
-					sendToAllBut("16 " + e.msg1 + "\n", e.msg1);
+					usersOnline.remove(e.msg1);
+					sendToAll(e.msg1, "5 " + e.msg1 + "\n", "16 " + e.msg1 + "\n");
 					break;
 
 					//message
@@ -69,7 +74,7 @@ public class DispatcherThread extends Thread
 						}
 					}
 					break;
-					
+
 					//add buddy
 				case 8:
 					if (dao.addBuddy(e.msg1, e.msg2))
@@ -157,7 +162,7 @@ public class DispatcherThread extends Thread
 		}
 	}
 	
-	private void sendInitialBuddies(String user)
+	private void sendBuddyList(String user)
 	{
 		List<Buddy> buddies = dao.getBuddies(user);
 		PrintWriter userStream = printWriters.get(user);
@@ -168,14 +173,59 @@ public class DispatcherThread extends Thread
 			return;
 		}
 		
+		ArrayList<String> noSend = new ArrayList<String>(buddies.size());
 		for (Buddy b : buddies)
 		{
 			if (printWriters.containsKey(b.getBuddyname()))
 				userStream.write("4 " + b.getBuddyname() + "\n");
-			userStream.flush();
+			
+			noSend.add(b.getBuddyname());
+		}
+		
+		for (String u : usersOnline)
+		{
+			if (!noSend.contains(u) && !u.equals(user))
+				userStream.write("15 " + u + "\n");
+		}
+		userStream.flush();
+	}
+	
+	private void sendToAll(String user, String forBuddy, String forNon)
+	{
+		System.out.println("USER: " + user);
+		System.out.println("FORBUDDY: " + forBuddy);
+		System.out.println("FORNON: " + forNon);
+		List<Buddy> b = dao.getFollowers(user);
+		ArrayList<String> buddies = new ArrayList<String>(b.size());
+		System.out.print("BUDDYLIST OF USER:");
+		for (Buddy i : b)
+		{
+			buddies.add(i.getUsername());
+			System.out.print(" " + i.getUsername());
+		}
+		
+
+		for (String u : usersOnline)
+		{
+			PrintWriter pw = printWriters.get(u);
+			if (pw != null && !u.equals(user))
+			{
+				if (buddies.contains(u))
+				{
+					System.out.println(u + " IS A FRIEND OF " + user);
+					pw.write(forBuddy);
+				}
+				else
+				{
+					System.out.println(u + " IS NOT A FRIEND OF " + user);
+					pw.write(forNon);
+				}
+				pw.flush();
+			}
 		}
 	}
 	
+	@Deprecated
 	private void sendToAllBut(String msg, String user)
 	{
 		PrintWriter[] pwArr = printWriters.values().toArray(new PrintWriter[0]);

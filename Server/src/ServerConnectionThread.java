@@ -1,7 +1,9 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 import data.DataAccess;
 import data.User;
@@ -190,9 +192,12 @@ public class ServerConnectionThread extends Thread
 		{
 			System.out.println("Invalid message format from " + getName() + ": " + input);
 		}
-		catch (Exception e)
+		catch (SocketException e)
 		{
-			System.err.println("Exception thrown!");
+			System.err.println("Connection reset!");
+		}
+		catch (IOException e)
+		{
 			e.printStackTrace();
 		}
 		finally
