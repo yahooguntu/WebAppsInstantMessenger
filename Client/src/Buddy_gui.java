@@ -21,7 +21,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 	private PrintWriter writer;
 	private ListenerThread listener = null;
 	private BufferedReader reader;
-	private ArrayList<Chat_gui> chatList;
+	protected ArrayList<Chat_gui> chatList;
 
 	/**
 	 * Creates new form Buddy_gui
@@ -31,6 +31,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 		writer = w;
 		connection = s;
 		reader = r;
+		chatList = new ArrayList<Chat_gui>();
 	}
 	
 	public void startListener()
@@ -52,12 +53,12 @@ public class Buddy_gui extends javax.swing.JFrame {
 	private void initComponents() {
 
 		jScrollPane1 = new JScrollPane();
-		AllContactsModel = new DefaultListModel();
-		AllContacts = new JList(AllContactsModel);
+		AllContactsModel = new DefaultListModel<String>();
+		AllContacts = new JList<String>(AllContactsModel);
 		jLabel1 = new JLabel();
 		jScrollPane2 = new JScrollPane();
-		BuddiesModel = new DefaultListModel();
-		Buddies = new JList(BuddiesModel);
+		BuddiesModel = new DefaultListModel<String>();
+		Buddies = new JList<String>(BuddiesModel);
 		jLabel2 = new JLabel();
 		Chat = new JButton();
 		AddToBuddies = new JButton();
@@ -223,8 +224,8 @@ public class Buddy_gui extends javax.swing.JFrame {
 	private void ChatMouseClicked(java.awt.event.MouseEvent evt) {
 		
 		String user = Buddies.getSelectedValue().toString();
-		Chat_gui chat = new Chat_gui(user);
-		chat.setTitle("Chat");
+		Chat_gui chat = new Chat_gui(user, this);
+		chat.setTitle(user);
 		chat.setVisible(true);
 		chatList.add(chat);
 	}
@@ -249,19 +250,28 @@ public class Buddy_gui extends javax.swing.JFrame {
 
 	@SuppressWarnings("rawtypes")
 	private void GroupChatMouseClicked(java.awt.event.MouseEvent evt) {
-		// TODO add your handling code here:
-		List user = Buddies.getSelectedValuesList();
+		List<String> user = Buddies.getSelectedValuesList();
 		String users = user.toString();
-		Chat_gui chat = new Chat_gui(users.substring(1, users.length()-2));
+		Chat_gui chat = new Chat_gui(users.substring(1, users.length()-2), this);
 		chat.setVisible(true);
 		chatList.add(chat);
 	}
 	
+	protected PrintWriter getWriter()
+	{
+		return writer;
+	}
+	
+	protected void pass(String mess)
+	{
+		//get the proper gui and pass the message to it.
+	}
+	
 	// Variables declaration - do not modify
 	private javax.swing.JButton AddToBuddies;
-	private javax.swing.JList AllContacts;
+	private javax.swing.JList<String> AllContacts;
 	private DefaultListModel<String> AllContactsModel;
-	private javax.swing.JList Buddies;
+	private javax.swing.JList<String> Buddies;
 	private DefaultListModel<String> BuddiesModel;
 	private javax.swing.JButton Chat;
 	private javax.swing.JButton GroupChat;

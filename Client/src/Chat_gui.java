@@ -1,3 +1,4 @@
+import java.io.PrintWriter;
 import java.util.Calendar;
 
 import javax.swing.text.BadLocationException;
@@ -16,10 +17,14 @@ public class Chat_gui extends javax.swing.JFrame {
 
     /**
      * Creates new form Chat_gui
+     * @param buddy_gui 
      */
-    public Chat_gui(String user) {
+	private Buddy_gui buddy = null;
+	private PrintWriter write = null;
+    public Chat_gui(String user, Buddy_gui buddy_gui) {
         initComponents();
-        chat_with_label.setText(user);
+        buddy = buddy_gui;
+        write = buddy_gui.getWriter();
     }
 
     /**
@@ -38,7 +43,7 @@ public class Chat_gui extends javax.swing.JFrame {
         Message = new javax.swing.JTextArea();
         Send = new javax.swing.JButton();
         Enter_send = new javax.swing.JCheckBox();
-        chat_with_label = new javax.swing.JLabel();
+        //chat_with_label = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         conversationPane = new javax.swing.JTextPane();
         doc = conversationPane.getStyledDocument();
@@ -86,7 +91,7 @@ public class Chat_gui extends javax.swing.JFrame {
             }
         });
 
-        chat_with_label.setText("jLabel1");
+        //chat_with_label.setText("jLabel1");
 
         conversationPane.setEditable(false);
         jScrollPane4.setViewportView(conversationPane);
@@ -105,7 +110,7 @@ public class Chat_gui extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Send))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(chat_with_label)
+                        //.addComponent(chat_with_label)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addComponent(jScrollPane4)
@@ -113,7 +118,7 @@ public class Chat_gui extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(chat_with_label)
+               // .addComponent(chat_with_label)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -139,20 +144,24 @@ public class Chat_gui extends javax.swing.JFrame {
 
     private void SendMouseClicked(java.awt.event.MouseEvent evt) {
     	String mess = Message.getText();
-    	Calendar cal = Calendar.getInstance();
-		String scal = cal.getTime().toLocaleString();
-    	mess = "username@ " + scal + ": " + mess + "\n";
-    	try
+    	if(!mess.equalsIgnoreCase("\n"))
     	{
-    		doc.insertString(doc.getLength(), mess, null);
+	    	Calendar cal = Calendar.getInstance();
+			String scal = cal.getTime().toLocaleString();
+	    	mess = buddy.getTitle() + "@ " + scal + ": " + mess + "\n";
+	    	try
+	    	{
+	    		doc.insertString(doc.getLength(), mess, null);
+	    	}
+	    	catch(BadLocationException e)
+	    	{
+	    		System.out.println(e.getStackTrace());
+	    	}
+	    	Message.setText("");
+	    	String mes = "3 " + buddy.getTitle() + " " + getTitle() + " " + Message.getText();
+	    	write.print(mes);
+	    	write.flush();
     	}
-    	catch(BadLocationException e)
-    	{
-    		System.out.println(e.getStackTrace());
-    	}
-    	Message.setText("");
-    	//TODO Send
-    	String mes = "3 " + "Username " + chat_with_label.getText() + " " + Message.getText();
     }
 
     private void MessageKeyTyped(java.awt.event.KeyEvent evt) {
@@ -163,30 +172,50 @@ public class Chat_gui extends javax.swing.JFrame {
     		if(temp == '\n')
     		{
     			String mess = Message.getText();
-    	    	Calendar cal = Calendar.getInstance();
-				String scal = cal.getTime().toLocaleString();
-    	    	mess = "username@ " + scal + ": " + mess;
-    	    	try
+    			if(!mess.equalsIgnoreCase("\n"))
     	    	{
-    	    		doc.insertString(doc.getLength(), mess, null);
+	    	    	Calendar cal = Calendar.getInstance();
+					String scal = cal.getTime().toLocaleString();
+	    	    	mess = buddy.getTitle() + "@ " + scal + ": " + mess;
+	    	    	try
+	    	    	{
+	    	    		doc.insertString(doc.getLength(), mess, null);
+	    	    	}
+	    	    	catch(BadLocationException e)
+	    	    	{
+	    	    		System.out.println(e.getStackTrace());
+	    	    	}
+	    	    	Message.setText("");
+	    	    	String mes = "3 " + buddy.getTitle() + " " + getTitle() + " " + Message.getText();
+	    	    	write.print(mes);
+	    	    	write.flush();
     	    	}
-    	    	catch(BadLocationException e)
-    	    	{
-    	    		System.out.println(e.getStackTrace());
-    	    	}
-    	    	Message.setText("");
-    	    	//TODO send
-    	    	String mes = "3 " + "Username " + chat_with_label.getText() + " " + Message.getText();
     		}    		
     	}
     	
+    }
+    
+    protected void message(String mess)
+    {
+    	String[] message = mess.split(" ");
+    	Calendar cal = Calendar.getInstance();
+		String scal = cal.getTime().toLocaleString();
+    	mess = message[2] + "@ " + scal + ": " + mess;
+    	try
+    	{
+    		doc.insertString(doc.getLength(), mess, null);
+    	}
+    	catch(BadLocationException e)
+    	{
+    		System.out.println(e.getStackTrace());
+    	}
     }
     
     // Variables declaration - do not modify
     private javax.swing.JCheckBox Enter_send;
     private javax.swing.JTextArea Message;
     private javax.swing.JButton Send;
-    private javax.swing.JLabel chat_with_label;
+    //private javax.swing.JLabel chat_with_label;
     private javax.swing.JTextPane conversationPane;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JScrollPane jScrollPane2;

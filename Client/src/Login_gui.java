@@ -3,6 +3,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.Calendar;
+
+import javax.swing.text.BadLocationException;
 
 /*
  * To change this template, choose Tools | Templates
@@ -78,6 +81,12 @@ public class Login_gui extends javax.swing.JDialog {
                 AddressActionPerformed(evt);
             }
         });
+        
+        Password.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                MessageKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,10 +147,21 @@ public class Login_gui extends javax.swing.JDialog {
     	// this will fire the event a second time
     	//doLogon();
     }
+   
+    private void MessageKeyTyped(java.awt.event.KeyEvent evt) {
+    	
+		char temp = evt.getKeyChar();
+		if(temp == '\n' && !Username.getText().equalsIgnoreCase(""))
+		{
+			doLogon();
+		}
+	}
+    	
     
-    private void AddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddressActionPerformed
+    
+    private void AddressActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-    }//GEN-LAST:event_AddressActionPerformed
+    }
     
     private void doLogon() {
     	System.out.println("logging in");

@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
@@ -53,6 +54,20 @@ public class ListenerThread extends Thread
 				{
 					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.removeFromOnlineList(s); } };
 					SwingUtilities.invokeLater(r);
+				}
+				else if(msgCode == 3)
+				{
+					ArrayList<Chat_gui> temp = gui.chatList;
+					String[] message = body[1].split(" ");
+					for(int i = 0; i < temp.size(); i++)
+					{
+						if(temp.get(i).getTitle().contains(message[0]))
+						{
+							//TODO make threadSafe
+							temp.get(i).message(body[1]);
+							break;
+						}
+					}
 				}
 				else
 				{
