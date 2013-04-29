@@ -55,6 +55,7 @@ public class ListenerThread extends Thread
 					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.removeFromOnlineList(s); } };
 					SwingUtilities.invokeLater(r);
 				}
+				//passes the message to the buddy gui
 				else if(msgCode == 3)
 				{
 					Runnable r = new ParameterizedRunnable(msgBody) { public void run() { gui.pass(s); } };

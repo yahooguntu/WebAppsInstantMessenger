@@ -160,7 +160,6 @@ public class Login_gui extends javax.swing.JDialog {
     
     
     private void AddressActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
     }
     
     private void doLogon() {

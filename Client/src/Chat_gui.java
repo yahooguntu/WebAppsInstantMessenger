@@ -195,6 +195,7 @@ public class Chat_gui extends javax.swing.JFrame {
     	
     }
     
+    //gets the message and appends it to the window
     protected void message(String From, String mess)
     {
     	Calendar cal = Calendar.getInstance();

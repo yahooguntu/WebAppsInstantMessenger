@@ -242,6 +242,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 		return writer;
 	}
 	
+	//finds the correct chat gui and passes it the message
 	protected void pass(String mess)
 	{
 		String[] message = mess.split(" ");
@@ -262,13 +263,14 @@ public class Buddy_gui extends javax.swing.JFrame {
 			{
 				if(title[j].equals(message[0]))
 				{
-					//TODO make threadSafe
 					chatList.get(i).message(message[0], message[2]);
 					found = true;
 					break;
 				}
 			}
 		}
+		//if the correct chat window was not found it creates one
+		//TODO remove from chat list on close of chat
 		if(!found)
 		{
 			Chat_gui chat = new Chat_gui(message[0], this);
