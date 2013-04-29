@@ -135,7 +135,8 @@ public class Login_gui extends javax.swing.JDialog {
     }
 
     private void Login_ButtonMouseClicked(java.awt.event.MouseEvent evt) {
-    	doLogon();
+    	// this will fire the event a second time
+    	//doLogon();
     }
     
     private void AddressActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddressActionPerformed
