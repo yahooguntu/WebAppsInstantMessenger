@@ -296,12 +296,14 @@ public class Buddy_gui extends javax.swing.JFrame {
 	
 	protected void incomingTyping(String user)
 	{
-		
+		Chat_gui chat = chatList.get(user);
+		chat.setStatus("Typing...");
 	}
 	
 	protected void incomingEnteredText(String user)
 	{
-		
+		Chat_gui chat = chatList.get(user);
+		chat.setStatus("Incoming Message...");
 	}
 	
 	// Variables declaration - do not modify
