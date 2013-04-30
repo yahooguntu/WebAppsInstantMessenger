@@ -65,13 +65,11 @@ public class Chat_gui extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         conversationPane = new javax.swing.JTextPane();
         doc = conversationPane.getStyledDocument();
-        status = new StatusBar();
-        
+        status = new javax.swing.JLabel();
         
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
-        jFrame1.getContentPane().add(status, java.awt.BorderLayout.SOUTH);
         
         
         jFrame1Layout.setHorizontalGroup(
@@ -95,7 +93,7 @@ public class Chat_gui extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(Message);
-
+        
         Send.setText("Send");
         Send.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -120,7 +118,8 @@ public class Chat_gui extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 232, Short.MAX_VALUE)
+                    	.addComponent(status)
+                    	.addGap(0, 200, Short.MAX_VALUE)
                         .addComponent(Enter_send)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(Send))
@@ -141,7 +140,8 @@ public class Chat_gui extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Send)
-                    .addComponent(Enter_send)))
+                    .addComponent(Enter_send)
+                    .addComponent(status)))
         );
 
         pack();
@@ -222,6 +222,10 @@ public class Chat_gui extends javax.swing.JFrame {
     	mess = mess.replaceAll("%40", "\n");
     	appendToChatbox(mess, (From.equals("Server") ? STYLE_SERVER : STYLE_BUDDY));
     }
+    protected void setStatus(String s)
+    {
+    	status.setText(s);
+    }
     
     // Variables declaration - do not modify
     private javax.swing.JCheckBox Enter_send;
@@ -235,7 +239,7 @@ public class Chat_gui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTree jTree1;
     private StyledDocument doc;
-    private StatusBar status;
+    private javax.swing.JLabel status;
     // End of variables declaration
 }
 
