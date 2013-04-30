@@ -25,7 +25,7 @@ public class Chat_gui extends javax.swing.JFrame {
 
     /**
      * Creates new form Chat_gui
-     * @param buddy_gui 
+     * @param buddy_gui
      */
 	private Buddy_gui buddy = null;
 	private static Style STYLE_YOU;
@@ -157,7 +157,6 @@ public class Chat_gui extends javax.swing.JFrame {
     }
 
     private void SendActionPerformed(java.awt.event.ActionEvent evt) {
-    	System.out.println("sendactionperformed");
     	String mess = Message.getText();
     	if(!mess.equalsIgnoreCase("\n"))
     	{
@@ -169,9 +168,16 @@ public class Chat_gui extends javax.swing.JFrame {
 	    	fireMessage();
     	}
     }
+    
+    private boolean typingSent = false;
 
     private void MessageKeyTyped(java.awt.event.KeyEvent evt) {
-    	System.out.println("messagekeytyped");
+    	if (typingSent == false)
+    	{
+    		buddy.setTyping(getTitle());
+    		typingSent = true;
+    	}
+    	
     	//if checked send on enter otherwise do nothing.
     	if(Enter_send.isSelected())
     	{
@@ -195,6 +201,7 @@ public class Chat_gui extends javax.swing.JFrame {
     
     private void fireMessage()
     {
+    	typingSent = false;
     	String msg = Message.getText();
     	msg = msg.replaceAll("\n", "%40");
     	buddy.send(getTitle(), msg);

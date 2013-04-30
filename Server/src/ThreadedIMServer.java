@@ -164,6 +164,10 @@ extends BasicServer implements Runnable
 					System.out.println("\t" + u);
 				}
 			}
+			else if (cmd[0].equals("exit"))
+			{
+				System.exit(0);
+			}
 			else
 				System.out.println("Malformed Command! Use 'say [user] [message]' or 'broadcast [message]'.");
 			

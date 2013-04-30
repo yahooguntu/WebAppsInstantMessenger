@@ -284,26 +284,29 @@ public class Buddy_gui extends javax.swing.JFrame {
 	
 	protected void setTyping(String user)
 	{
-		writer.write("10 " + getTitle() + user + "\n");
+		writer.write("10 " + getTitle() + " " + user + "\n");
 		writer.flush();
 	}
 	
 	protected void setEnteredText(String user)
 	{
-		writer.write("11 " + getTitle() + user + "\n");
+		writer.write("11 " + getTitle() + " " + user + "\n");
 		writer.flush();
 	}
 	
 	protected void incomingTyping(String user)
 	{
 		Chat_gui chat = chatList.get(user);
-		chat.setStatus("Typing...");
+		if (chat != null)
+		{
+			chat.setStatus(user + " is typing...");
+		}
 	}
 	
 	protected void incomingEnteredText(String user)
 	{
 		Chat_gui chat = chatList.get(user);
-		chat.setStatus("Incoming Message...");
+		chat.setStatus(user + " has entered text.");
 	}
 	
 	// Variables declaration - do not modify

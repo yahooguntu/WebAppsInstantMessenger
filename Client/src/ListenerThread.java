@@ -75,12 +75,12 @@ public class ListenerThread extends Thread
 				}
 				else if (msgCode == 10 && body.length == 2)
 				{
-					Runnable r = new ParameterizedRunnable(body[1]) { public void run() { gui.incomingTyping(s); } };
+					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.incomingTyping(s); } };
 					SwingUtilities.invokeLater(r);
 				}
 				else if (msgCode == 11 && body.length == 2)
 				{
-					Runnable r = new ParameterizedRunnable(body[1]) { public void run() { gui.incomingEnteredText(s); } };
+					Runnable r = new ParameterizedRunnable(body[0]) { public void run() { gui.incomingEnteredText(s); } };
 					SwingUtilities.invokeLater(r);
 				}
 				else
