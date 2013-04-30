@@ -284,10 +284,22 @@ public class Buddy_gui extends javax.swing.JFrame {
 	
 	protected void setTyping(String user)
 	{
+		writer.write("10 " + getTitle() + user + "\n");
+		writer.flush();
+	}
+	
+	protected void setEnteredText(String user)
+	{
+		writer.write("11 " + getTitle() + user + "\n");
+		writer.flush();
+	}
+	
+	protected void incomingTyping(String user)
+	{
 		
 	}
 	
-	protected void unsetTyping(String user)
+	protected void incomingEnteredText(String user)
 	{
 		
 	}

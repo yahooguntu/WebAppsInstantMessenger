@@ -58,7 +58,7 @@ public class ListenerThread extends Thread
 					SwingUtilities.invokeLater(r);
 				}
 				//passes the message to the buddy gui
-				else if(msgCode == 3)
+				else if(msgCode == 3 && body.length >= 3)
 				{
 					Runnable r = new ParameterizedRunnable(msgBody) { public void run() { gui.incomingMessage(s); } };
 					SwingUtilities.invokeLater(r);					
@@ -68,9 +68,19 @@ public class ListenerThread extends Thread
 					JOptionPane.showMessageDialog(gui, "Logged off by server!");
 					System.exit(0);
 				}
-				else if (msgCode == 12)
+				else if (msgCode == 12 && body.length >= 1)
 				{
 					Runnable r = new ParameterizedRunnable(body[1] + " UNDELIVERABLE MESSAGE") { public void run() { gui.incomingMessage(s); } };
+					SwingUtilities.invokeLater(r);
+				}
+				else if (msgCode == 10 && body.length == 2)
+				{
+					Runnable r = new ParameterizedRunnable(body[1]) { public void run() { gui.incomingTyping(s); } };
+					SwingUtilities.invokeLater(r);
+				}
+				else if (msgCode == 11 && body.length == 2)
+				{
+					Runnable r = new ParameterizedRunnable(body[1]) { public void run() { gui.incomingEnteredText(s); } };
 					SwingUtilities.invokeLater(r);
 				}
 				else
