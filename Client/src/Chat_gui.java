@@ -1,7 +1,12 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.io.PrintWriter;
 import java.util.Calendar;
 
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -60,9 +65,15 @@ public class Chat_gui extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         conversationPane = new javax.swing.JTextPane();
         doc = conversationPane.getStyledDocument();
+        status = new StatusBar();
+        
+        
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
+        jFrame1.getContentPane().add(status, java.awt.BorderLayout.SOUTH);
+        
+        
         jFrame1Layout.setHorizontalGroup(
             jFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 400, Short.MAX_VALUE)
@@ -224,5 +235,8 @@ public class Chat_gui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTree jTree1;
     private StyledDocument doc;
+    private StatusBar status;
     // End of variables declaration
 }
+
+
