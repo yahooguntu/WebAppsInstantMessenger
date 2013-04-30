@@ -135,8 +135,9 @@ public class Login_gui extends javax.swing.JDialog {
 	            .addComponent(Login_Button)
 	            .addContainerGap())
 	    );
-
+        
         pack();
+        Username.requestFocusInWindow();
     }// </editor-fold>
 
     private void Login_ButtonActionPerformed(java.awt.event.ActionEvent evt) {

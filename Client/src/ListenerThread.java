@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 
@@ -58,8 +60,18 @@ public class ListenerThread extends Thread
 				//passes the message to the buddy gui
 				else if(msgCode == 3)
 				{
-					Runnable r = new ParameterizedRunnable(msgBody) { public void run() { gui.pass(s); } };
+					Runnable r = new ParameterizedRunnable(msgBody) { public void run() { gui.incomingMessage(s); } };
 					SwingUtilities.invokeLater(r);					
+				}
+				else if (msgCode == 7)
+				{
+					JOptionPane.showMessageDialog(gui, "Logged off by server!");
+					System.exit(0);
+				}
+				else if (msgCode == 12)
+				{
+					Runnable r = new ParameterizedRunnable(body[1] + " UNDELIVERABLE MESSAGE") { public void run() { gui.incomingMessage(s); } };
+					SwingUtilities.invokeLater(r);
 				}
 				else
 				{

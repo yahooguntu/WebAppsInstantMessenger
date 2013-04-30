@@ -193,17 +193,10 @@ public class DispatcherThread extends Thread
 	
 	private void sendToAll(String user, String forBuddy, String forNon)
 	{
-		System.out.println("USER: " + user);
-		System.out.println("FORBUDDY: " + forBuddy);
-		System.out.println("FORNON: " + forNon);
 		List<Buddy> b = dao.getFollowers(user);
 		ArrayList<String> buddies = new ArrayList<String>(b.size());
-		System.out.print("BUDDYLIST OF USER:");
 		for (Buddy i : b)
-		{
 			buddies.add(i.getUsername());
-			System.out.print(" " + i.getUsername());
-		}
 		
 
 		for (String u : usersOnline)
@@ -213,12 +206,10 @@ public class DispatcherThread extends Thread
 			{
 				if (buddies.contains(u))
 				{
-					System.out.println(u + " IS A FRIEND OF " + user);
 					pw.write(forBuddy);
 				}
 				else
 				{
-					System.out.println(u + " IS NOT A FRIEND OF " + user);
 					pw.write(forNon);
 				}
 				pw.flush();

@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.security.MessageDigest;
 import java.sql.*;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -130,6 +131,39 @@ extends BasicServer implements Runnable
 					queueEventDispatch(new Event(3, "Server", user, msg));
 				}
 			}
+			else if (cmd[0].equals("kick"))
+			{
+				if (cmd[1].equals("all"))
+				{
+					Set<String> users = printWriters.keySet();
+					for (String u : users)
+					{
+						PrintWriter pw = printWriters.remove(u);
+						pw.write("7 " + u + "\n");
+						pw.flush();
+						pw.close();
+					}
+				}
+				else
+				{
+					PrintWriter pw = printWriters.remove(cmd[1]);
+					if (pw != null)
+					{
+						pw.write("7 " + cmd[1] + "\n");
+						pw.flush();
+						pw.close();
+					}
+				}
+			}
+			else if (cmd[0].equals("list"))
+			{
+				Set<String> users = printWriters.keySet();
+				System.out.println("Online users:");
+				for (String u : users)
+				{
+					System.out.println("\t" + u);
+				}
+			}
 			else
 				System.out.println("Malformed Command! Use 'say [user] [message]' or 'broadcast [message]'.");
 			
@@ -138,7 +172,6 @@ extends BasicServer implements Runnable
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			System.out.print(": ");
 		}
 	}
 	

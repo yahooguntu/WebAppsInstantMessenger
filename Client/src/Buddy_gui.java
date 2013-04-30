@@ -1,15 +1,15 @@
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
-import javax.jws.Oneway;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
 /**
@@ -21,7 +21,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 	private PrintWriter writer;
 	private ListenerThread listener = null;
 	private BufferedReader reader;
-	private ArrayList<Chat_gui> chatList;
+	private HashMap<String, Chat_gui> chatList;
 
 	/**
 	 * Creates new form Buddy_gui
@@ -31,7 +31,7 @@ public class Buddy_gui extends javax.swing.JFrame {
 		writer = w;
 		connection = s;
 		reader = r;
-		chatList = new ArrayList<Chat_gui>();
+		chatList = new HashMap<String, Chat_gui>();
 	}
 	
 	public void startListener()
@@ -76,25 +76,20 @@ public class Buddy_gui extends javax.swing.JFrame {
 
 		jScrollPane1.setViewportView(AllContacts);
 
-		jLabel1.setText("All Contacts:");
+		jLabel1.setText("All Users:");
 
 		jScrollPane2.setViewportView(Buddies);
 
 		jLabel2.setText("Buddies:");
 
 		Chat.setText("Chat");
-		Chat.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				ChatMouseClicked(evt);
+		Chat.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				ChatMouseActionPerformed(evt);
 			}
 		});
 
 		AddToBuddies.setText("Add to Buddies");
-		AddToBuddies.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				AddToBuddiesMouseClicked(evt);
-			}
-		});
 		AddToBuddies.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				AddToBuddiesActionPerformed(evt);
@@ -102,13 +97,14 @@ public class Buddy_gui extends javax.swing.JFrame {
 		});
 		
 		RemoveBuddy.setText("Remove Buddy");
-		RemoveBuddy.addMouseListener(new java.awt.event.MouseAdapter() {
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				RemoveBuddyMouseClicked(evt);
+		RemoveBuddy.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				RemoveBuddyActionPerformed(evt);
 			}
 		});
 
 		GroupChat.setText("Group Chat");
+		GroupChat.setVisible(false);
 		GroupChat.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				GroupChatMouseClicked(evt);
@@ -192,39 +188,44 @@ public class Buddy_gui extends javax.swing.JFrame {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	protected void RemoveBuddyMouseClicked(MouseEvent evt) {
-		String b = Buddies.getSelectedValue().toString();
-		if (b != null)
+	protected void RemoveBuddyActionPerformed(ActionEvent evt) {
+		try
 		{
-			writer.write("9 " + getTitle() + " " + b);
-			removeFromBuddyList(b);
-		}
+			String b = Buddies.getSelectedValue().toString();
+			if (b != null)
+			{
+				writer.write("9 " + getTitle() + " " + b + "\n");
+				writer.flush();
+				removeFromBuddyList(b);
+			}
+		} catch (NullPointerException e) {}
 	}
 
-	private void ChatMouseClicked(java.awt.event.MouseEvent evt) {
-		
-		String user = Buddies.getSelectedValue().toString();
-		Chat_gui chat = new Chat_gui(user, this);
-		chat.setTitle(user);
-		chat.setVisible(true);
-		chatList.add(chat);
+	private void ChatMouseActionPerformed(ActionEvent evt) {
+		try {
+			String user = Buddies.getSelectedValue().toString();
+			Chat_gui chat = new Chat_gui(user, this);
+			chat.setVisible(true);
+			chatList.put(user, chat);
+		} catch (NullPointerException e) {}
 	}
 
 	private void AddToBuddiesActionPerformed(java.awt.event.ActionEvent evt) {
-		addBuddy();
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void AddToBuddiesMouseClicked(java.awt.event.MouseEvent evt) {
-		addBuddy();
-	}
-	
-	private void addBuddy() {
-		String u = AllContacts.getSelectedValue().toString();
+		String u = null;
+		try
+		{
+			u = AllContacts.getSelectedValue().toString();
+		}
+		catch (NullPointerException e)
+		{
+			u = (String) JOptionPane.showInputDialog(this, "Buddy name:");
+		}
+		
 		if (u != null)
 		{
 			removeFromOnlineList(u);
-			writer.write("8 " + getTitle() + u);
+			writer.write("8 " + getTitle() + " " + u + "\n");
+			writer.flush();
 		}
 	}
 
@@ -234,49 +235,61 @@ public class Buddy_gui extends javax.swing.JFrame {
 		Chat_gui chat = new Chat_gui(user, this);
 		chat.setTitle(user);
 		chat.setVisible(true);
-		chatList.add(chat);
-	}
-	
-	protected PrintWriter getWriter()
-	{
-		return writer;
+		//chatList.add(chat);
 	}
 	
 	//finds the correct chat gui and passes it the message
-	protected void pass(String mess)
+	protected void incomingMessage(String mess)
 	{
 		String[] message = mess.split(" ");
-		boolean found = false;
-		for(int i = 0; i < chatList.size(); i++)
-		{
-			String[] title;
 		
-			if(chatList.get(i).getTitle().contains(","))
-			{
-				title = chatList.get(i).getTitle().split(",");
-			}
-			else
-			{
-				title = new String[] {chatList.get(1).getTitle()};
-			}
-			for(int j = 0; j < title.length-1; j++)
-			{
-				if(title[j].equals(message[0]))
-				{
-					chatList.get(i).message(message[0], message[2]);
-					found = true;
-					break;
-				}
-			}
-		}
-		//if the correct chat window was not found it creates one
-		//TODO remove from chat list on close of chat
-		if(!found)
+		if (message.length < 3)
+			return;
+		
+		Chat_gui chat = chatList.get(message[0]);
+		
+		if (chat == null)
 		{
-			Chat_gui chat = new Chat_gui(message[0], this);
+			chat = new Chat_gui(message[0], this);
 			chat.setVisible(true);
-			chatList.add(chat);
+			chatList.put(message[0], chat);
 		}
+		
+		// fake a server message if required
+		if (message[1].equals("UNDELIVERABLE"))
+		{
+			message = new String[]{"Server", "", "Message could not be delivered!"};
+		}
+		
+		String msg = "";
+		for (int i = 2; i < message.length; i++)
+		{
+			msg += message[i] + " ";
+		}
+		
+		chat.message(message[0], msg);
+	}
+	
+	protected void send(String to, String msg)
+	{
+		String out = "3 " + getTitle() + " " + to + " " + msg + "\n";
+		writer.write(out);
+		writer.flush();
+	}
+	
+	protected void unregisterChatWindow(String buddy)
+	{
+		chatList.remove(buddy);
+	}
+	
+	protected void setTyping(String user)
+	{
+		
+	}
+	
+	protected void unsetTyping(String user)
+	{
+		
 	}
 	
 	// Variables declaration - do not modify

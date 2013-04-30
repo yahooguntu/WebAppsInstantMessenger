@@ -1,7 +1,10 @@
+import java.awt.Color;
 import java.io.PrintWriter;
 import java.util.Calendar;
 
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /*
@@ -20,11 +23,14 @@ public class Chat_gui extends javax.swing.JFrame {
      * @param buddy_gui 
      */
 	private Buddy_gui buddy = null;
-	private PrintWriter write = null;
+	private static Style STYLE_YOU;
+	private static Style STYLE_BUDDY;
+	private static Style STYLE_SERVER;
+	
     public Chat_gui(String user, Buddy_gui buddy_gui) {
+    	setTitle(user);
         initComponents();
         buddy = buddy_gui;
-        write = buddy_gui.getWriter();
     }
 
     /**
@@ -35,7 +41,14 @@ public class Chat_gui extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
-
+    	
+    	this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				buddy.unregisterChatWindow(getTitle());
+			}
+		});
+    	
         jFrame1 = new javax.swing.JFrame();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
@@ -73,23 +86,14 @@ public class Chat_gui extends javax.swing.JFrame {
         jScrollPane2.setViewportView(Message);
 
         Send.setText("Send");
-        Send.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                SendMouseClicked(evt);
+        Send.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SendActionPerformed(evt);
             }
         });
 
         Enter_send.setText("send on Enter");
-        Enter_send.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                Enter_sendStateChanged(evt);
-            }
-        });
-        Enter_send.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Enter_sendActionPerformed(evt);
-            }
-        });
+        Enter_send.setSelected(true);
 
         //chat_with_label.setText("jLabel1");
 
@@ -130,41 +134,33 @@ public class Chat_gui extends javax.swing.JFrame {
         );
 
         pack();
-    }
-
-    private void Enter_sendActionPerformed(java.awt.event.ActionEvent evt) {
+        Message.requestFocusInWindow();
         
-    	
+        // set up the styles
+        STYLE_BUDDY = conversationPane.addStyle("buddyStyle", null);
+        STYLE_SERVER = conversationPane.addStyle("serverStyle", null);
+        STYLE_YOU = conversationPane.addStyle("youStyle", null);
+        StyleConstants.setForeground(STYLE_BUDDY, new Color(0, 0, 255));
+        StyleConstants.setForeground(STYLE_SERVER, new Color(255, 0, 0));
+        StyleConstants.setForeground(STYLE_YOU, new Color(0, 0, 0));
     }
 
-    private void Enter_sendStateChanged(javax.swing.event.ChangeEvent evt) {
-        
-    	
-    }
-
-    private void SendMouseClicked(java.awt.event.MouseEvent evt) {
+    private void SendActionPerformed(java.awt.event.ActionEvent evt) {
+    	System.out.println("sendactionperformed");
     	String mess = Message.getText();
     	if(!mess.equalsIgnoreCase("\n"))
     	{
 	    	Calendar cal = Calendar.getInstance();
 			String scal = cal.getTime().toLocaleString();
-	    	mess = buddy.getTitle() + "@ " + scal + ": " + mess + "\n";
-	    	try
-	    	{
-	    		doc.insertString(doc.getLength(), mess, null);
-	    	}
-	    	catch(BadLocationException e)
-	    	{
-	    		System.out.println(e.getStackTrace());
-	    	}
-	    	Message.setText("");
-	    	String mes = "3 " + buddy.getTitle() + " " + getTitle() + " " + Message.getText();
-	    	write.print(mes);
-	    	write.flush();
+	    	mess = "[" + scal + "] " + buddy.getTitle() + ": " + mess + "\n";
+	    	
+	    	appendToChatbox(mess, STYLE_YOU);
+	    	fireMessage();
     	}
     }
 
     private void MessageKeyTyped(java.awt.event.KeyEvent evt) {
+    	System.out.println("messagekeytyped");
     	//if checked send on enter otherwise do nothing.
     	if(Enter_send.isSelected())
     	{
@@ -172,27 +168,38 @@ public class Chat_gui extends javax.swing.JFrame {
     		if(temp == '\n')
     		{
     			String mess = Message.getText();
+	    	    Message.setText(Message.getText().substring(0, mess.length()-1));
     			if(!mess.equalsIgnoreCase("\n"))
     	    	{
 	    	    	Calendar cal = Calendar.getInstance();
 					String scal = cal.getTime().toLocaleString();
-	    	    	mess = buddy.getTitle() + "@ " + scal + ": " + mess;
-	    	    	try
-	    	    	{
-	    	    		doc.insertString(doc.getLength(), mess, null);
-	    	    	}
-	    	    	catch(BadLocationException e)
-	    	    	{
-	    	    		System.out.println(e.getStackTrace());
-	    	    	}
-	    	    	Message.setText("");
-	    	    	String mes = "3 " + buddy.getTitle() + " " + getTitle() + " " + Message.getText();
-	    	    	write.print(mes);
-	    	    	write.flush();
+	    	    	mess = "[" + scal + "] " + buddy.getTitle() + ": " + mess;
+	    	    	
+	    	    	appendToChatbox(mess, STYLE_YOU);
+	    	    	fireMessage();
     	    	}
     		}    		
     	}
-    	
+    }
+    
+    private void fireMessage()
+    {
+    	String msg = Message.getText();
+    	msg = msg.replaceAll("\n", "%40");
+    	buddy.send(getTitle(), msg);
+    	Message.setText("");
+    }
+    
+    private void appendToChatbox(String s, Style style)
+    {
+    	try
+    	{
+    		doc.insertString(doc.getLength(), s, style);
+    	}
+    	catch(BadLocationException e)
+    	{
+    		System.out.println(e.getStackTrace());
+    	}
     }
     
     //gets the message and appends it to the window
@@ -200,15 +207,9 @@ public class Chat_gui extends javax.swing.JFrame {
     {
     	Calendar cal = Calendar.getInstance();
 		String scal = cal.getTime().toLocaleString();
-    	mess = From + "@ " + scal + ": " + mess;
-    	try
-    	{
-    		doc.insertString(doc.getLength(), mess, null);
-    	}
-    	catch(BadLocationException e)
-    	{
-    		System.out.println(e.getStackTrace());
-    	}
+    	mess = "[" + scal + "] " + From + ": " + mess + "\n";
+    	mess = mess.replaceAll("%40", "\n");
+    	appendToChatbox(mess, (From.equals("Server") ? STYLE_SERVER : STYLE_BUDDY));
     }
     
     // Variables declaration - do not modify
