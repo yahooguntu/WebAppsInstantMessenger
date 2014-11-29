@@ -1,0 +1,8 @@
+WebappsInstantMessenger
+=======================
+This is a fully-featured client and server for sending instant
+messages with a GUI. It's pretty much what you'd expect from
+an instant messenger, though we did create a buddy system
+(which was outside the scope of the assignment). It operates
+off of a database for usernames/passwords and buddies, so it
+can't be run as-is.
